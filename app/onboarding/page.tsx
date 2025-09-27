@@ -10,7 +10,7 @@ import { CheckCircle, Shield, AlertCircle } from "lucide-react"
 import { WORLD_ID_ACTIONS } from "@/lib/world-actions"
 
 export default function OnboardingPage() {
-  const { user, isWorldApp, isLoading, toggleDevMode } = useWorldAuth()
+  const { user, isWorldApp, isLoading, verifyWorldId } = useWorldAuth()
   const router = useRouter()
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -42,14 +42,26 @@ export default function OnboardingPage() {
   }
 
   useEffect(() => {
-    // If user is already verified and has profile, redirect to dashboard
     if (user && user.worldIdVerified) {
-      fetchProfile()
+      fetchProfile();
+    } else if (!user) {
+      if (isWorldApp) {
+        const autoVerify = async () => {
+          const result = await verifyWorldId(WORLD_ID_ACTIONS.ONBOARDING);
+          if (!result.success) {
+            setVerificationError(result.error || 'Automatic verification failed.');
+            setLoading(false);
+          }
+        };
+        autoVerify();
+      } else {
+        setLoading(false);
+      }
     } else {
-      setLoading(false)
+      setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, router])
+  }, [user, isWorldApp, verifyWorldId, router]);
 
 
 
@@ -75,53 +87,6 @@ export default function OnboardingPage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
           <p className="text-black">Loading...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Show World App requirement if not in World App
-  if (!isWorldApp) {
-    return (
-      <div className="min-h-screen bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40 text-black flex items-center justify-center overflow-x-hidden">
-        <div className="w-full max-w-md mx-auto p-6 text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Shield className="w-8 h-8 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold mb-4">World App Required</h2>
-          <p className="text-gray-600 mb-6">
-            To use Datagraph, please open this app in World App to verify your identity and access all features.
-          </p>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-            <p className="text-sm text-blue-800">
-              World ID verification ensures a bot-free experience and enables secure payments on World Chain.
-            </p>
-          </div>
-          
-          {/* Developer Preview Helper - Made more prominent */}
-          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-lg p-4 mb-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center">
-                <AlertCircle className="w-5 h-5 text-yellow-600 mr-2" />
-                <p className="font-semibold text-yellow-800">Testing in World App?</p>
-              </div>
-            </div>
-            <p className="text-sm text-yellow-700 mb-4">
-              If you're testing from World App but still see this screen, the MiniKit detection might not be working correctly.
-            </p>
-            <div className="flex flex-col gap-2">
-              <Button 
-                onClick={toggleDevMode}
-                size="sm"
-                className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium"
-              >
-                🧪 Enable Developer Mode
-              </Button>
-              <p className="text-xs text-yellow-600 text-center">
-                Click above to bypass World App detection for testing
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     )
@@ -202,4 +167,4 @@ export default function OnboardingPage() {
       </div>
     </div>
   )
-} 
+}
