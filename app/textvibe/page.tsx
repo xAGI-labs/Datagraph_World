@@ -1018,7 +1018,7 @@ function TextVibeContent() {
               variant="ghost"
               size="sm"
               onClick={() => setShowChatHistory(!showChatHistory)}
-              className="text-white hover:bg-white hover:text-black"
+              className="text-gray-500 hover:bg-white hover:text-black"
             >
               <History className="w-4 h-4 mr-2" />
               History
@@ -1082,10 +1082,6 @@ function TextVibeContent() {
               </div>
             ))}
           </div>
-
-          {/* Spacer for floating bar */}
-          <div className="h-40"></div>
-
         </main>
 
         {/* Chat History Sidebar */}
@@ -1166,42 +1162,47 @@ function TextVibeContent() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 100, opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl px-4"
+                className="fixed bottom-24 sm:bottom-20 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"
               >
-                <div className="bg-white backdrop-blur-sm rounded-xl p-3 shadow-2xl border border-gray-200 mb-4 mx-auto w-full max-w-lg flex justify-center">
-                  <div className="grid grid-cols-4 gap-3 w-full">
-                    <Button
-                      onClick={() => handleFloatingBarSelection('left')}
-                      className="bg-gray-100 hover:bg-gray-200 text-gray-900 px-4 py-2 rounded-lg flex items-center justify-center text-sm border border-gray-300"
-                    >
-                      <ChevronLeft className="w-4 h-4 mr-1" />
-                      <span>Left</span>
-                    </Button>
+                <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-2 shadow-2xl border border-gray-200/50 grid grid-cols-[1fr,auto,1fr] items-center gap-2">
+                  <Button
+                    onClick={() => handleFloatingBarSelection('left')}
+                    className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-xl w-full flex items-center justify-center text-base font-semibold transition-all duration-300"
+                  >
+                    <ChevronLeft className="w-5 h-5 mr-2" />
+                    <span>Model A</span>
+                  </Button>
+                  <div className="flex gap-2">
                     <Button
                       onClick={() => handleFloatingBarSelection('tie')}
-                      className="bg-gray-100 hover:bg-gray-200 text-gray-900 px-4 py-2 rounded-lg flex items-center justify-center text-sm border border-gray-300"
+                      className="bg-gray-200/50 hover:bg-gray-200 text-gray-700 p-3 rounded-xl flex items-center justify-center text-sm border border-gray-300/50 transition-all duration-300"
                     >
-                      <span>Tie</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     </Button>
                     <Button
                       onClick={() => handleFloatingBarSelection('both-bad')}
-                      className="bg-gray-100 hover:bg-gray-200 text-gray-900 px-4 py-2 rounded-lg flex items-center justify-center text-sm border border-gray-300"
+                      className="bg-gray-200/50 hover:bg-gray-200 text-gray-700 p-3 rounded-xl flex items-center justify-center text-sm border border-gray-300/50 transition-all duration-300"
                     >
-                      <X className="w-4 h-4 mr-1" />
-                      <span>Both Bad</span>
-                    </Button>
-                    <Button
-                      onClick={() => handleFloatingBarSelection('right')}
-                      className="bg-gray-100 hover:bg-gray-200 text-gray-900 px-4 py-2 rounded-lg flex items-center justify-center text-sm border border-gray-300"
-                    >
-                      <span>Right</span>
-                      <ChevronRight className="w-4 h-4 ml-1" />
+                      <X className="w-5 h-5" />
                     </Button>
                   </div>
+                  <Button
+                    onClick={() => handleFloatingBarSelection('right')}
+                    className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-xl w-full flex items-center justify-center text-base font-semibold transition-all duration-300"
+                  >
+                    <span>Model B</span>
+                    <ChevronRight className="w-5 h-5 ml-2" />
+                  </Button>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
+
+
+
+
+
+
 
           {/* FollowUpInput is always visible on comparison screen */}
           <motion.div
@@ -1209,10 +1210,12 @@ function TextVibeContent() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl px-4"
+            className={`fixed ${showFloatingBar ? 'bottom-40 sm:bottom-36' : 'bottom-6'} left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl px-4`}
           >
             <FollowUpInput onSubmit={handleFollowUpSubmit} isSubmitting={isGenerating} />
           </motion.div>
+
+
 
           {/* Feedback Modal Floating - always rendered when showFeedbackDetails is true */}
           <AnimatePresence>
