@@ -324,7 +324,10 @@ export default function Sidebar({ className = "", onWidthChange }: SidebarProps)
           <div className="px-2 pb-4 border-t border-gray-200">
             {user?.worldIdVerified ? (
               <motion.button
-                onClick={() => logout()}
+                onClick={async () => {
+                  console.log('🚪 Sign out clicked from sidebar');
+                  await logout();
+                }}
                 className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 group mt-2 text-gray-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 border border-transparent"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}

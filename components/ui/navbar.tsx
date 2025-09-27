@@ -88,8 +88,8 @@ export default function Navbar() {
                       <button
                         onClick={async () => {
                           setDropdownOpen(false);
-                          logout();
-                          router.push("/");
+                          console.log('🚪 Sign out clicked from navbar');
+                          await logout();
                         }}
                         className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       >
@@ -149,10 +149,10 @@ export default function Navbar() {
             
             {user ? (
               <button
-                onClick={() => {
+                onClick={async () => {
                   setMobileMenuOpen(false);
-                  logout();
-                  router.push("/");
+                  console.log('🚪 Sign out clicked from mobile navbar');
+                  await logout();
                 }}
                 className="block w-full text-left px-3 py-2 text-red-600 hover:bg-red-50"
               >

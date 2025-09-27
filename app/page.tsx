@@ -29,7 +29,6 @@ export default function App() {
   
   const words = ["design", "art", "voice", "text", "games", "code", "stories", "music"];
 
-  // Close profile menu when clicking outside or pressing escape
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
@@ -274,9 +273,10 @@ export default function App() {
                     
                     <div className="border-t border-gray-100 mt-2 pt-2">
                       <button
-                        onClick={() => {
-                          logout();
+                        onClick={async () => {
                           setShowProfileMenu(false);
+                          console.log('🚪 Sign out clicked from homepage');
+                          await logout();
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2"
                       >

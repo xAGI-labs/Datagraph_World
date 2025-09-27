@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
 import { 
   MiniKit, 
   VerificationLevel, 
@@ -29,7 +30,7 @@ interface WorldAuthContextType {
   isLoading: boolean
   isWorldApp: boolean
   login: (action: string, signal?: string) => Promise<{ success: boolean; error?: string }>
-  logout: () => void
+  logout: () => Promise<void>
   verifyWorldId: (action: string, signal?: string) => Promise<{ success: boolean; error?: string }>
   verifyWithIDKit: (result: IDKitSuccessResult, action: string, signal?: string) => Promise<{ success: boolean; error?: string; user?: User }>
   initiatePayment: (amount: number, token: string, description: string) => Promise<{ success: boolean; error?: string }>
@@ -43,51 +44,26 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const [isWorldApp, setIsWorldApp] = useState(false)
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   useEffect(() => {
-    // Enhanced World App detection with multiple methods
+    // Simplified World App detection - focus on what matters
     const detectWorldApp = () => {
-      const miniKitInstalled = MiniKit.isInstalled()
-      
-      // Additional detection methods for better compatibility
-      const userAgent = navigator.userAgent.toLowerCase()
-      const isWorldAppUA = userAgent.includes('worldapp') || 
-                          userAgent.includes('world app') ||
-                          userAgent.includes('minikit')
-      
-      // Check for World App specific context
-      const hasWorldAppContext = typeof window !== 'undefined' && (
-        window.hasOwnProperty('worldapp') || 
-        window.hasOwnProperty('WorldApp') ||
-        window.hasOwnProperty('minikit') ||
-        // Check for World App iframe context
-        window.parent !== window || // Running in iframe
-        window.location.href.includes('world.org') ||
-        document.referrer.includes('worldapp') ||
-        document.referrer.includes('world.org')
-      )
-      
-      // Developer override
+      // Developer override for testing
       const devOverride = localStorage.getItem('world_app_dev_mode') === 'true'
       
-      // Check URL parameters that might indicate World App
-      const urlParams = new URLSearchParams(window.location.search)
-      const hasWorldAppParams = urlParams.has('worldapp') || urlParams.has('miniapp')
+      // Basic detection methods
+      const miniKitInstalled = MiniKit.isInstalled()
+      const userAgent = navigator.userAgent.toLowerCase()
+      const isWorldAppUA = userAgent.includes('worldapp') || userAgent.includes('minikit')
       
-      const detected = miniKitInstalled || isWorldAppUA || hasWorldAppContext || devOverride || hasWorldAppParams
+      const detected = miniKitInstalled || isWorldAppUA || devOverride
       
-      // Enhanced debug logging
-      console.log('🌍 World App Detection Debug:', {
+      console.log('🌍 World App Detection:', {
         miniKitInstalled,
         isWorldAppUA,
-        hasWorldAppContext,
         devOverride,
-        hasWorldAppParams,
-        userAgent: userAgent.slice(0, 100) + '...',
-        windowLocation: window.location.href,
-        documentReferrer: document.referrer,
-        isIframe: window.parent !== window,
-        finalDetection: detected
+        detected
       })
       
       return detected
@@ -98,7 +74,12 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
     // Load user from localStorage
     const savedUser = localStorage.getItem('worldauth_user')
     if (savedUser) {
-      setUser(JSON.parse(savedUser))
+      try {
+        setUser(JSON.parse(savedUser))
+      } catch (error) {
+        console.error('Error parsing saved user:', error)
+        localStorage.removeItem('worldauth_user')
+      }
     }
     setIsLoading(false)
   }, [])
@@ -107,17 +88,10 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
     action: string,
     signal?: string
   ): Promise<{ success: boolean; error?: string }> => {
-    const devMode = localStorage.getItem('world_app_dev_mode') === 'true'
-    
-    // More lenient check - allow verification if we detected World App OR dev mode
-    if (!MiniKit.isInstalled() && !isWorldApp && !devMode) {
-      return { success: false, error: 'Please open this app in World App to verify your identity' }
-    }
-    
     setIsLoading(true)
 
     try {
-      console.log('🔐 Attempting World ID verification:', { action, signal, isWorldApp, devMode })
+      console.log('🔐 Attempting World ID verification:', { action, signal, isWorldApp })
       
       const verifyPayload: VerifyCommandInput = {
         action,
@@ -230,11 +204,50 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
     return await verifyWorldId(action, signal)
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.clear()
-    queryClient.clear()
-    window.location.href = '/'
+  const logout = async () => {
+    console.log('🚪 Starting logout process...')
+    
+    try {
+      // Clear user state immediately
+      console.log('🚪 Clearing user state...')
+      setUser(null)
+      
+      // Clear specific localStorage items
+      console.log('🚪 Clearing localStorage...')
+      try {
+        localStorage.removeItem('worldauth_user')
+        localStorage.removeItem('world_app_dev_mode')
+      } catch (storageError) {
+        console.warn('localStorage clear failed:', storageError)
+      }
+      
+      // Clear React Query cache
+      console.log('🚪 Clearing query cache...')
+      try {
+        queryClient.clear()
+      } catch (cacheError) {
+        console.warn('Query cache clear failed:', cacheError)
+      }
+      
+      console.log('🚪 Logout operations complete, redirecting...')
+      
+      // Force immediate redirect using multiple methods
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 100)
+      
+      // Also try router method
+      try {
+        router.replace('/')
+      } catch (routerError) {
+        console.log('Router redirect failed:', routerError)
+      }
+      
+    } catch (error) {
+      console.error('❌ Logout error:', error)
+      // Emergency fallback - force redirect immediately
+      window.location.href = '/'
+    }
   }
 
   const initiatePayment = async (
@@ -242,10 +255,6 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
     token: string,
     description: string
   ): Promise<{ success: boolean; error?: string }> => {
-    if (!MiniKit.isInstalled()) {
-      return { success: false, error: 'Please open this app in World App to make payments' }
-    }
-
     if (!user || !user.worldIdVerified) {
       return { success: false, error: 'Please verify your World ID first' }
     }
