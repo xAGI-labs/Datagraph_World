@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Trophy, TrendingUp, Wallet, Zap, ArrowRightLeft, Coins } from "lucide-react"
 
 export default function WorldChainPage() {
-  const { user, initiatePayment } = useWorldAuth()
+  const { user, initiatePayment, isLoading } = useWorldAuth()
   const router = useRouter()
   const [userStats, setUserStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -47,12 +47,12 @@ export default function WorldChainPage() {
   }, [user?.worldIdNullifier])
 
   useEffect(() => {
-    if (!user?.worldIdVerified) {
+    if (!isLoading && !user?.worldIdVerified) {
       router.push('/onboarding')
-    } else {
+    } else if (user?.worldIdVerified) {
       fetchUserStats()
     }
-  }, [user?.worldIdVerified, fetchUserStats, router])
+  }, [user?.worldIdVerified, isLoading, fetchUserStats, router])
 
   const handleTrade = async () => {
     if (!pointsToTrade || !user?.worldIdNullifier) return
