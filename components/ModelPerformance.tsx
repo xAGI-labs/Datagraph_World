@@ -314,7 +314,7 @@ export default function ModelPerformance() {
                   </div>
 
                   {/* Chart container */}
-                  <div className="ml-16 h-full flex items-end justify-center gap-3 py-4">
+                  <div className="ml-8 sm:ml-16 h-full flex items-end justify-center gap-3 py-4">
                     {displayedModels.map((model, index) => {
                       const value = selectedMetric === "eloRating" ? model.eloRating : model.winRate
                       const heightPercentage = ((value - minValue) / (maxValue - minValue)) * 100
@@ -332,7 +332,7 @@ export default function ModelPerformance() {
                           {/* Bar container */}
                           <div className="relative flex flex-col items-center">
                             <div
-                              className={`w-16 ${model.color} rounded-t-sm transition-all duration-500 ease-out relative`}
+                              className={`w-12 sm:w-16 ${model.color} rounded-t-sm transition-all duration-500 ease-out relative`}
                               style={{ height: `${Math.max(heightPercentage * 2.4, 20)}px` }}
                             >
                               {/* Value label inside bar */}

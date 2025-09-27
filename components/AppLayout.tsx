@@ -39,7 +39,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
         <div className="fixed left-0 top-0 h-screen z-30">
           <Sidebar onWidthChange={handleSidebarWidthChange} />
         </div>
-        <main className="flex-1 min-h-screen" style={{ paddingLeft: `${sidebarWidth}px` }}>
+                <main className={`flex-1 min-h-screen ${sidebarWidth === 240 ? 'md:pl-60' : 'md:pl-16'}`}>
           <div className="max-w-7xl mx-auto px-6 py-6">
             {children}
           </div>
