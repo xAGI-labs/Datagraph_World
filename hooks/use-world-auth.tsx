@@ -30,6 +30,7 @@ interface WorldAuthContextType {
   logout: () => void
   verifyWorldId: (action: string, signal?: string) => Promise<{ success: boolean; error?: string }>
   initiatePayment: (amount: number, token: string, description: string) => Promise<{ success: boolean; error?: string }>
+  toggleDevMode: () => void
 }
 
 const WorldAuthContext = createContext<WorldAuthContextType | undefined>(undefined)
@@ -40,8 +41,46 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
   const [isWorldApp, setIsWorldApp] = useState(false)
 
   useEffect(() => {
-    // Check if running in World App
-    setIsWorldApp(MiniKit.isInstalled())
+    // Enhanced World App detection for Developer Preview
+    const detectWorldApp = () => {
+      const miniKitInstalled = MiniKit.isInstalled()
+      
+      // Additional detection methods for Developer Preview
+      const userAgent = navigator.userAgent.toLowerCase()
+      const isWorldAppUA = userAgent.includes('worldapp') || 
+                          userAgent.includes('world app') ||
+                          userAgent.includes('minikit')
+      
+      // Check for World App specific objects
+      const hasWorldAppContext = typeof window !== 'undefined' && (
+        window.hasOwnProperty('worldapp') || 
+        window.hasOwnProperty('WorldApp') ||
+        window.hasOwnProperty('minikit') ||
+        // Developer Preview specific detection
+        window.location.href.includes('world.org') ||
+        window.location.href.includes('worldapp')
+      )
+      
+      // Developer override for testing
+      const devOverride = localStorage.getItem('world_app_dev_mode') === 'true'
+      
+      const detected = miniKitInstalled || isWorldAppUA || hasWorldAppContext || devOverride
+      
+      // Debug logging for Developer Preview
+      console.log('🌍 World App Detection Debug:', {
+        miniKitInstalled,
+        isWorldAppUA,
+        hasWorldAppContext,
+        devOverride,
+        userAgent: userAgent.slice(0, 100) + '...',
+        windowLocation: window.location.href,
+        finalDetection: detected
+      })
+      
+      return detected
+    }
+    
+    setIsWorldApp(detectWorldApp())
     
     // Load user from localStorage on mount
     const savedUser = localStorage.getItem('worldauth_user')
@@ -69,8 +108,15 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const verifyWorldId = async (action: string, signal?: string): Promise<{ success: boolean; error?: string }> => {
-    if (!MiniKit.isInstalled()) {
+    const devMode = localStorage.getItem('world_app_dev_mode') === 'true'
+    
+    if (!MiniKit.isInstalled() && !devMode) {
       return { success: false, error: 'Please open this app in World App to verify your identity' }
+    }
+    
+    // In dev mode, show more helpful error messages
+    if (!MiniKit.isInstalled() && devMode) {
+      console.warn('🔧 Developer Mode: Attempting verification without MiniKit.isInstalled()')
     }
 
     try {
@@ -116,8 +162,14 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const initiatePayment = async (amount: number, token: string, description: string): Promise<{ success: boolean; error?: string }> => {
-    if (!MiniKit.isInstalled()) {
+    const devMode = localStorage.getItem('world_app_dev_mode') === 'true'
+    
+    if (!MiniKit.isInstalled() && !devMode) {
       return { success: false, error: 'Please open this app in World App to make payments' }
+    }
+    
+    if (!MiniKit.isInstalled() && devMode) {
+      console.warn('🔧 Developer Mode: Attempting payment without MiniKit.isInstalled()')
     }
 
     if (!user || !user.worldIdVerified) {
@@ -172,6 +224,12 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const toggleDevMode = () => {
+    const currentMode = localStorage.getItem('world_app_dev_mode') === 'true'
+    localStorage.setItem('world_app_dev_mode', (!currentMode).toString())
+    window.location.reload()
+  }
+
   return (
     <WorldAuthContext.Provider value={{
       user,
@@ -181,6 +239,7 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
       logout,
       verifyWorldId,
       initiatePayment,
+      toggleDevMode,
     }}>
       {children}
     </WorldAuthContext.Provider>
