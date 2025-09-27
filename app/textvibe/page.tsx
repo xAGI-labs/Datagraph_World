@@ -104,6 +104,7 @@ function TextVibeContent() {
   const [showSignInModal, setShowSignInModal] = useState(false)
   const [showEndSessionModal, setShowEndSessionModal] = useState(false)
   const [totalPoints, setTotalPoints] = useState(0)
+  const [currentPage, setCurrentPage] = useState(0)
 
   const questionPills = [
     "What's the best way to learn a new language?",
@@ -585,24 +586,53 @@ function TextVibeContent() {
                 </div>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
-                className="w-full max-w-full pb-2 flex justify-center"
+                className="w-full max-w-lg mx-auto px-10"
               >
-                <div
-                  className="flex flex-wrap space-x-2 px-1 justify-center"
-                >
-                  {[...questionPills, ...questionPills].map((question, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setPrompt(question)}
-                      className="bg-white border border-gray-200 rounded-full px-3 py-1.5 text-xs text-gray-700 hover:text-gray-900 hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-all duration-300 shadow-sm mb-2"
-                    >
-                      {question}
-                    </button>
-                  ))}
+                <div className="relative flex items-center justify-center">
+                  <Button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 0}
+                    variant="ghost"
+                    size="icon"
+                    className="absolute -left-8 top-1/2 -translate-y-1/2 rounded-full disabled:opacity-30"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </Button>
+                  <div className="overflow-hidden w-full">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={currentPage}
+                        initial={{ opacity: 0, x: 30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -30 }}
+                        transition={{ duration: 0.2, ease: "easeInOut" }}
+                        className="grid grid-cols-2 md:grid-cols-4 gap-2 py-2"
+                      >
+                        {questionPills.slice(currentPage * 4, (currentPage + 1) * 4).map((question, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setPrompt(question)}
+                            className="bg-white border border-gray-200 rounded-full h-full px-3 py-2 text-xs text-gray-700 hover:text-gray-900 hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-all duration-300 shadow-sm text-center flex items-center justify-center"
+                          >
+                            {question}
+                          </button>
+                        ))}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                  <Button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={(currentPage + 1) * 4 >= questionPills.length}
+                    variant="ghost"
+                    size="icon"
+                    className="absolute -right-8 top-1/2 -translate-y-1/2 rounded-full disabled:opacity-30"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </Button>
                 </div>
               </motion.div>
 
