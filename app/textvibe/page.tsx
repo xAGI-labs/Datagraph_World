@@ -589,16 +589,16 @@ function TextVibeContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
-                className="w-full max-w-full overflow-x-auto pb-2 flex justify-center"
+                className="w-full max-w-full pb-2 flex justify-center"
               >
                 <div
-                  className="flex space-x-2 whitespace-nowrap min-w-max px-1 justify-center"
+                  className="flex flex-wrap space-x-2 px-1 justify-center"
                 >
                   {[...questionPills, ...questionPills].map((question, index) => (
                     <button
                       key={index}
                       onClick={() => setPrompt(question)}
-                      className="bg-white border border-gray-200 rounded-full px-3 py-1.5 text-xs text-gray-700 hover:text-gray-900 hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-all duration-300 min-w-max shadow-sm"
+                      className="bg-white border border-gray-200 rounded-full px-3 py-1.5 text-xs text-gray-700 hover:text-gray-900 hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-all duration-300 shadow-sm mb-2"
                     >
                       {question}
                     </button>
