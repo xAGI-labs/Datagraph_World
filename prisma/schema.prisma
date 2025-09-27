@@ -1,0 +1,386 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // OnchainKit wallet address (for trading and vibe points)
+  walletAddress String? @unique
+
+  vibePoints           Int @default(0)
+  promptsSubmitted     Int @default(0)
+  comparisonsCompleted Int @default(0)
+  dayStreak            Int @default(0)
+
+  // new: track whether user completed onboarding
+  hasOnboarded   Boolean @default(false)
+  age            String?
+  educationLevel String?
+  country        String?
+  city           String?
+  occupation     String?
+
+  lastActiveDate DateTime?
+
+  voiceConversations Int     @default(0)
+  voiceMessageCount  Int     @default(0)
+  favoriteVoiceRoom  String?
+  totalVoiceTime     Int     @default(0)
+
+  gender String?
+
+  // Skills and preferences for projects
+  languages          String[] @default([]) // Human languages: English, Spanish, etc.
+  skills             String[] @default([]) // General skills: Marketing, Design, etc.
+  experienceLevel    String? // Beginner, Intermediate, Advanced, Expert
+  interests          String[] @default([])
+  projectPreferences String[] @default([])
+
+  accounts              Account[]
+  sessions              Session[]
+  prompts               Prompt[]
+  comparisons           Comparison[]
+  voiceSessions         VoiceSession[]
+  voiceMessages         VoiceMessage[]
+  voiceFeedbacks        VoiceFeedback[]
+  roomUsageStats        RoomUsageStats[]
+  trades                Trading[]
+  userProjects          UserProject[]
+  annotationSubmissions AnnotationSubmission[]
+  vibeTransactions      VibeTransaction[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Prompt {
+  id        String   @id @default(cuid())
+  userId    String
+  text      String
+  category  String?
+  createdAt DateTime @default(now())
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comparisons Comparison[]
+}
+
+model Comparison {
+  id            String   @id @default(cuid())
+  userId        String
+  promptId      String
+  prompt        String
+  modelA        String
+  modelB        String
+  modelALabel   String
+  modelBLabel   String
+  selectedModel String?
+  feedback      String?
+  responseTimeA Int?
+  responseTimeB Int?
+  pointsEarned  Int      @default(100)
+  createdAt     DateTime @default(now())
+
+  selectedNeither   Boolean @default(false)
+  userCorrectAnswer String?
+
+  user      User   @relation(fields: [userId], references: [id])
+  promptRef Prompt @relation(fields: [promptId], references: [id])
+}
+
+model VoiceSession {
+  id              String    @id @default(cuid())
+  userId          String
+  roomId          String
+  startTime       DateTime  @default(now())
+  endTime         DateTime?
+  messageCount    Int       @default(0)
+  totalPoints     Int       @default(0)
+  sessionDuration Int?
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  voiceMessages VoiceMessage[]
+  feedback      VoiceFeedback?
+}
+
+model VoiceMessage {
+  id               String   @id @default(cuid())
+  sessionId        String
+  userId           String
+  roomId           String
+  userMessage      String
+  agentPersonality String
+  agentModel       String
+  agentResponse    String
+  agentAudioUrl    String?
+  responseTime     Int?
+  pointsEarned     Int      @default(10)
+  createdAt        DateTime @default(now())
+
+  session VoiceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VoiceFeedback {
+  id        String @id @default(cuid())
+  sessionId String @unique
+  userId    String
+  roomId    String
+
+  enjoyedConversation Boolean?
+  hostRating          Int?
+  conversationRating  Int?
+
+  // Specific feedback
+  feedbackText      String?
+  wouldReturnToRoom Boolean?
+  hostPersonality   String
+
+  // Improvement suggestions
+  suggestedImprovements String?
+
+  createdAt DateTime @default(now())
+
+  session VoiceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model RoomUsageStats {
+  id     String @id @default(cuid())
+  userId String
+  roomId String
+
+  // Usage tracking
+  totalSessions  Int      @default(0)
+  totalMessages  Int      @default(0)
+  totalTimeSpent Int      @default(0)
+  lastVisited    DateTime @default(now())
+
+  averageRating Float?
+  totalPoints   Int    @default(0)
+
+  isFavorite Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roomId])
+}
+
+model Trading {
+  id               String   @id @default(cuid())
+  userId           String
+  vibePointsTraded Int
+  cryptoSymbol     String
+  cryptoAmount     Float
+  walletAddress    String
+  exchangeRate     Float
+  usdValue         Float?
+  transactionHash  String?
+  status           String   @default("completed") // completed, pending, failed
+  createdAt        DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id             String @id @default(cuid())
+  title          String
+  description    String
+  type           String // "annotation", "data_collection", "content_moderation", etc.
+  category       String // "Programming", "Language", "Content", "Image", etc.
+  difficulty     String // "Beginner", "Intermediate", "Advanced", "Expert"
+  estimatedHours Int?
+  pointsReward   Int    @default(0) // Points users get for completing
+
+  // Requirements for assignment
+  requiredSkills     String[] @default([]) // Skills needed: ["Python", "Marketing", "Design"]
+  requiredLanguages  String[] @default([]) // Languages needed: ["English", "Spanish"]
+  requiredExperience String? // Minimum experience level required
+  maxAssignments     Int      @default(10) // Max users who can work on this
+
+  // Project status
+  isActive    Boolean   @default(true)
+  isPublished Boolean   @default(false)
+  deadline    DateTime?
+
+  // Admin info
+  createdBy        String?
+  instructions     String?
+  datasetUrl       String?
+  submissionFormat String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Project assignments
+  userProjects      UserProject[]
+  annotationProject AnnotationProject?
+}
+
+model UserProject {
+  id        String @id @default(cuid())
+  userId    String
+  projectId String
+
+  // Assignment status
+  status      String    @default("assigned") // assigned, in_progress, completed, submitted, rejected, approved
+  assignedAt  DateTime  @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
+  submittedAt DateTime?
+
+  // Progress tracking
+  progress  Float @default(0.0) // 0.0 to 1.0 (0% to 100%)
+  timeSpent Int   @default(0) // Time spent in minutes
+
+  // Submission data
+  submissionData  String? // JSON data or file path of the submission
+  submissionNotes String? // User notes about their submission
+  feedback        String?
+  rating          Float?
+  pointsEarned    Int     @default(0)
+
+  matchScore Float?
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+}
+
+// Annotation-specific models
+model AnnotationProject {
+  id        String @id @default(cuid())
+  projectId String @unique
+
+  // Annotation specific fields
+  payRate   String
+  isStarter Boolean              @default(false) // Is this a starter assessment project
+  passScore Int                  @default(80) // Minimum score to pass
+  project   Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  questions AnnotationQuestion[]
+}
+
+model AnnotationQuestion {
+  id                  String @id @default(cuid())
+  annotationProjectId String
+
+  // Question content
+  title       String
+  description String
+  userQuery   String?
+  context     String?
+
+  // Question metadata
+  questionType String // "ai_evaluation", "classification", "multiple_choice"
+  orderIndex   Int // Order in the project
+  timeLimit    Int? // Time limit in minutes
+  pointsWorth  Int    @default(10)
+
+  annotationProject AnnotationProject      @relation(fields: [annotationProjectId], references: [id], onDelete: Cascade)
+  responses         AnnotationResponse[]
+  submissions       AnnotationSubmission[]
+}
+
+model AnnotationResponse {
+  id         String @id @default(cuid())
+  questionId String
+
+  // Response content
+  responseLabel String // "Response A", "Response B", "Response C"
+  responseText  String
+  isCorrect     Boolean @default(false)
+
+  // AI Response metadata
+  aiModel      String?
+  responseTime Int? // Response time in ms
+
+  question AnnotationQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model AnnotationSubmission {
+  id         String @id @default(cuid())
+  userId     String
+  questionId String
+
+  // User's submission
+  selectedResponse String? // Which response they selected
+  reasoning        String? // Their reasoning/explanation
+  confidence       Int? // Confidence level 1-5
+  timeSpent        Int // Time spent in seconds
+
+  // Evaluation
+  isCorrect    Boolean @default(false)
+  pointsEarned Int     @default(0)
+  feedback     String?
+
+  submittedAt DateTime @default(now())
+
+  user     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question AnnotationQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model VibeTransaction {
+  id           String   @id @default(cuid())
+  userId       String
+  amount       Int
+  type         String // 'EARNED', 'SPENT', 'TRADED'
+  description  String?
+  txHash       String? // For onchain transactions
+  blockchainTx Boolean  @default(false) // Is this an onchain transaction
+  cryptoAmount Float? // Amount of crypto involved
+  cryptoSymbol String? // ETH, USDC, etc.
+  exchangeRate Float? // Rate at time of transaction
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
