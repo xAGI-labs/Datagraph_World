@@ -124,14 +124,19 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
       const { finalPayload } = await MiniKit.commandsAsync.verify(verifyPayload)
 
       if (finalPayload.status === 'error') {
-        return { success: false, error: 'Verification failed' }
+        console.log('Error payload', finalPayload)
+        return { success: false, error: finalPayload.error_code || 'Verification failed' }
       }
 
       // Verify on backend
       const verifyResponse = await fetch('/api/world/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payload: finalPayload, action, signal }),
+        body: JSON.stringify({ 
+          payload: finalPayload as ISuccessResult, // Parses only the fields we need to verify
+          action, 
+          signal 
+        }),
       })
 
       const result = await verifyResponse.json()

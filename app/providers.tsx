@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { MiniKitProvider } from '@worldcoin/minikit-js/minikit-provider';
+import { MiniKitProvider } from "@worldcoin/minikit-js/minikit-provider";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WorldAuthProvider } from '@/hooks/use-world-auth';
 
