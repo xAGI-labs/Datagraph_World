@@ -17,7 +17,17 @@ export async function POST(req: NextRequest) {
     const { payload, action, signal } = (await req.json()) as IRequestPayload;
     const app_id = process.env.NEXT_PUBLIC_WORLD_APP_ID as `app_${string}`;
 
+    console.log("🔐 Backend verification request:", {
+      action,
+      signal,
+      app_id: app_id ? `${app_id.slice(0, 10)}...` : "MISSING",
+      nullifier: payload.nullifier_hash
+        ? `${payload.nullifier_hash.slice(0, 10)}...`
+        : "MISSING",
+    });
+
     if (!app_id) {
+      console.error("❌ WORLD_APP_ID not configured");
       return NextResponse.json(
         { error: "World App ID not configured" },
         { status: 500 }
@@ -25,6 +35,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify the proof with World ID
+    console.log("🌐 Calling verifyCloudProof...");
     const verifyRes = (await verifyCloudProof(
       payload,
       app_id,
@@ -32,7 +43,13 @@ export async function POST(req: NextRequest) {
       signal
     )) as IVerifyResponse;
 
+    console.log("🌐 verifyCloudProof result:", verifyRes);
+
     if (verifyRes.success) {
+      console.log(
+        "✅ World ID verification successful! Creating/updating user..."
+      );
+
       // Create or update user with World ID verification
       const user = await prisma.user.upsert({
         where: { worldIdNullifier: payload.nullifier_hash },
@@ -48,6 +65,11 @@ export async function POST(req: NextRequest) {
         },
       });
 
+      console.log("✅ User created/updated successfully:", {
+        userId: user.id,
+        verified: user.worldIdVerified,
+      });
+
       return NextResponse.json({
         success: true,
         user: {
@@ -58,7 +80,9 @@ export async function POST(req: NextRequest) {
       });
     } else {
       // Handle verification failure (usually duplicate verification)
-      console.error("World ID verification failed:", verifyRes);
+
+      console.error("❌ World ID verification failed:", verifyRes);
+      
       return NextResponse.json(
         {
           success: false,
