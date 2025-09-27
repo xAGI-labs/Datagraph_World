@@ -15,7 +15,7 @@ interface IRequestPayload {
 export async function POST(req: NextRequest) {
   try {
     const { payload, action, signal } = (await req.json()) as IRequestPayload;
-    const app_id = process.env.WORLD_APP_ID as `app_${string}`;
+    const app_id = process.env.NEXT_PUBLIC_WORLD_APP_ID as `app_${string}`;
 
     if (!app_id) {
       return NextResponse.json(
@@ -58,6 +58,7 @@ export async function POST(req: NextRequest) {
       });
     } else {
       // Handle verification failure (usually duplicate verification)
+      console.error("World ID verification failed:", verifyRes);
       return NextResponse.json(
         {
           success: false,
