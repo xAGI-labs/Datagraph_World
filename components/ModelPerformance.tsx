@@ -257,13 +257,13 @@ export default function ModelPerformance() {
   const minValue = selectedMetric === "eloRating" ? 600 : 0
 
   return (
-    <div className="w-full min-h-screen">
-      <div className="max-w-7xl mx-auto p-6">
+    <div className="w-full">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6">
         <div className="bg-transparent rounded-lg shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-8 pt-8 pb-4">
-            <h1 className="text-3xl font-semibold text-gray-900 mb-4 sm:mb-0">Model Performance</h1>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 sm:px-8 pt-6 sm:pt-8 pb-4">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-4 sm:mb-0">Model Performance</h1>
 
-            <div className="relative flex bg-gray-200 p-1 rounded-full">
+            <div className="relative flex bg-gray-200 p-1 rounded-full self-start sm:self-auto">
               {/* Sliding background */}
               <div
                 className={`absolute top-1 bottom-1 bg-white rounded-full transition-all duration-300 ease-out ${
@@ -274,7 +274,7 @@ export default function ModelPerformance() {
               {/* Buttons */}
               <button
                 onClick={() => handleMetricChange("winRate")}
-                className={`relative z-10 px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
+                className={`relative z-10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full transition-colors duration-200 ${
                   selectedMetric === "winRate" ? "text-gray-900" : "text-gray-600"
                 }`}
               >
@@ -282,7 +282,7 @@ export default function ModelPerformance() {
               </button>
               <button
                 onClick={() => handleMetricChange("eloRating")}
-                className={`relative z-10 px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
+                className={`relative z-10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full transition-colors duration-200 ${
                   selectedMetric === "eloRating" ? "text-gray-900" : "text-gray-600"
                 }`}
               >
@@ -291,16 +291,16 @@ export default function ModelPerformance() {
             </div>
           </div>
 
-          <div className="px-8 pb-8">
-            <div className="relative h-96">
+          <div className="px-4 sm:px-8 pb-6 sm:pb-8">
+            <div className="relative h-80 sm:h-96">
               {isLoading ? (
                 <div className="flex items-center justify-center h-full">
-                  <div className="text-gray-500 text-base">Updating chart...</div>
+                  <div className="text-gray-500 text-sm sm:text-base">Updating chart...</div>
                 </div>
               ) : (
                 <>
                   {/* Y-axis labels */}
-                  <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-sm text-gray-400 pr-4 py-4">
+                  <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs sm:text-sm text-gray-400 pr-2 sm:pr-4 py-4">
                     <span>{selectedMetric === "eloRating" ? "1800" : "100%"}</span>
                     <span>{selectedMetric === "eloRating" ? "1350" : "75%"}</span>
                     <span>{selectedMetric === "eloRating" ? "900" : "50%"}</span>
@@ -309,34 +309,34 @@ export default function ModelPerformance() {
                   </div>
 
                   {/* Y-axis title */}
-                  <div className="absolute left-2 top-1/2 -translate-y-1/2 -rotate-90 text-sm text-gray-400 font-medium whitespace-nowrap">
+                  <div className="absolute -left-2 sm:left-2 top-1/2 -translate-y-1/2 -rotate-90 text-xs sm:text-sm text-gray-400 font-medium whitespace-nowrap">
                     {selectedMetric === "eloRating" ? "Elo Rating" : "Win Rate"}
                   </div>
 
                   {/* Chart container */}
-                  <div className="ml-8 sm:ml-16 h-full flex items-end justify-center gap-3 py-4">
+                  <div className="ml-10 sm:ml-16 h-full flex items-end justify-center gap-1.5 sm:gap-3 py-4 overflow-x-auto">
                     {displayedModels.map((model, index) => {
                       const value = selectedMetric === "eloRating" ? model.eloRating : model.winRate
                       const heightPercentage = ((value - minValue) / (maxValue - minValue)) * 100
 
                       return (
-                        <div key={model.name + index} className="flex flex-col items-center">
+                        <div key={model.name + index} className="flex flex-col items-center flex-shrink-0">
                           {/* Model logo */}
-                          <div className="mb-2 opacity-80">{model.logo}</div>
+                          <div className="mb-1.5 opacity-80">{model.logo}</div>
 
                           {/* Model name above bar */}
-                          <div className="text-xs text-gray-600 text-center mb-2 max-w-20 leading-tight">
+                          <div className="text-2xs sm:text-xs text-gray-600 text-center mb-1.5 max-w-16 sm:max-w-20 leading-tight">
                             {model.shortName}
                           </div>
 
                           {/* Bar container */}
                           <div className="relative flex flex-col items-center">
                             <div
-                              className={`w-12 sm:w-16 ${model.color} rounded-t-sm transition-all duration-500 ease-out relative`}
+                              className={`w-10 sm:w-16 ${model.color} rounded-t-sm transition-all duration-500 ease-out relative`}
                               style={{ height: `${Math.max(heightPercentage * 2.4, 20)}px` }}
                             >
                               {/* Value label inside bar */}
-                              <div className="absolute inset-0 flex items-center justify-center text-white text-xs font-medium">
+                              <div className="absolute inset-0 flex items-center justify-center text-white text-2xs sm:text-xs font-medium">
                                 {selectedMetric === "eloRating" ? value : `${value}%`}
                               </div>
                             </div>
@@ -349,7 +349,7 @@ export default function ModelPerformance() {
               )}
             </div>
 
-            <div className="relative mt-8 pt-4 border-t border-gray-100" ref={containerRef}>
+            <div className="relative mt-6 sm:mt-8 pt-4 border-t border-gray-100" ref={containerRef}>
               {/* Sliding background for categories */}
               <div
                 className="absolute bg-gray-100 rounded-full transition-all duration-300 ease-out pointer-events-none"
@@ -357,13 +357,13 @@ export default function ModelPerformance() {
               />
 
               {/* Category buttons */}
-              <div className="flex flex-wrap justify-center gap-2">
+              <div className="flex flex-wrap justify-center gap-1 sm:gap-2">
                 {categories.map((category) => (
                   <button
                     key={category}
                     ref={(el) => { categoryRefs.current[category] = el }}
                     onClick={() => setSelectedCategory(category)}
-                    className={`relative z-10 px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
+                    className={`relative z-10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full transition-colors duration-200 ${
                       selectedCategory === category ? "text-gray-900" : "text-gray-600 hover:text-gray-800"
                     }`}
                   >
