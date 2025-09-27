@@ -83,6 +83,7 @@ export async function POST(request: NextRequest) {
         promptsSubmitted: { increment: 1 },
         comparisonsCompleted: { increment: 1 },
         lastActiveDate: new Date(),
+        vibePoints: { increment: 100 },
       },
     });
 
