@@ -208,11 +208,7 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
     console.log('🚪 Starting logout process...')
     
     try {
-      // Clear user state immediately
-      console.log('🚪 Clearing user state...')
-      setUser(null)
-      
-      // Clear specific localStorage items
+      // Clear specific localStorage items FIRST
       console.log('🚪 Clearing localStorage...')
       try {
         localStorage.removeItem('worldauth_user')
@@ -229,24 +225,19 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
         console.warn('Query cache clear failed:', cacheError)
       }
       
+      // Clear user state
+      console.log('🚪 Clearing user state...')
+      setUser(null)
+      
       console.log('🚪 Logout operations complete, redirecting...')
       
-      // Force immediate redirect using multiple methods
-      setTimeout(() => {
-        window.location.href = '/'
-      }, 100)
-      
-      // Also try router method
-      try {
-        router.replace('/')
-      } catch (routerError) {
-        console.log('Router redirect failed:', routerError)
-      }
+      // Use window.location.assign for more reliable redirect
+      window.location.assign('/')
       
     } catch (error) {
       console.error('❌ Logout error:', error)
-      // Emergency fallback - force redirect immediately
-      window.location.href = '/'
+      // Emergency fallback - force redirect immediately with replace
+      window.location.replace('/')
     }
   }
 
