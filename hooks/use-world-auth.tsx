@@ -231,6 +231,7 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setUser(null)
     localStorage.removeItem('worldauth_user')
+    window.location.href = '/'
   }
 
   const initiatePayment = async (
