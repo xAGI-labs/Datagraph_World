@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { 
   MiniKit, 
   VerificationLevel, 
@@ -41,6 +42,7 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isWorldApp, setIsWorldApp] = useState(false)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     // Enhanced World App detection with multiple methods
@@ -230,7 +232,8 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem('worldauth_user')
+    localStorage.clear()
+    queryClient.clear()
     window.location.href = '/'
   }
 
