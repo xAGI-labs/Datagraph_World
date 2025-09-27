@@ -123,10 +123,14 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
 
       const { finalPayload } = await MiniKit.commandsAsync.verify(verifyPayload)
 
+      console.log('🔐 MiniKit verification response:', finalPayload)
+
       if (finalPayload.status === 'error') {
-        console.log('Error payload', finalPayload)
+        console.error('❌ MiniKit verification failed:', finalPayload)
         return { success: false, error: finalPayload.error_code || 'Verification failed' }
       }
+
+      console.log('✅ MiniKit verification successful, sending to backend...')
 
       // Verify on backend
       const verifyResponse = await fetch('/api/world/verify', {
@@ -139,14 +143,25 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
         }),
       })
 
+      console.log('🌐 Backend response status:', verifyResponse.status)
+
+      if (!verifyResponse.ok) {
+        const errorText = await verifyResponse.text()
+        console.error('❌ Backend verification failed:', errorText)
+        return { success: false, error: `Backend error: ${verifyResponse.status}` }
+      }
+
       const result = await verifyResponse.json()
+      console.log('🌐 Backend verification result:', result)
 
       if (result.success) {
         const newUser = result.user as User
         setUser(newUser)
         localStorage.setItem('worldauth_user', JSON.stringify(newUser))
+        console.log('✅ Verification complete! User saved:', newUser)
         return { success: true }
       } else {
+        console.error('❌ Backend verification rejected:', result)
         return { success: false, error: result.error || 'Verification failed' }
       }
     } catch (err) {
