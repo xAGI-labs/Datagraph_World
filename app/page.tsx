@@ -315,7 +315,7 @@ export default function App() {
                 className="rounded-lg"
               />
             </div>
-            <h1 className="text-5xl md:text-5xl font-bold tracking-tight text-gray-900">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
               Datagraph
             </h1>
             <p className="text-lg text-gray-600 max-w-lg mx-auto leading-relaxed">
@@ -358,7 +358,7 @@ export default function App() {
                   }
                 }}
                 placeholder="Compare AI models for your next project"
-                className="w-full h-36 bg-white border-amber-600/40 border-2 text-gray-900 placeholder-gray-400 text-base p-4 pr-14 rounded-xl resize-none transition-all duration-200 shadow-sm"
+                className="w-full h-24 md:h-36 bg-white border-amber-600/40 border-2 text-gray-900 placeholder-gray-400 text-base p-4 pr-14 rounded-xl resize-none transition-all duration-200 shadow-sm"
                 style={{
                   borderColor: 'var(--focus-border-color)'
                 } as React.CSSProperties}
@@ -371,39 +371,6 @@ export default function App() {
               >
                 <ArrowRight className="w-4 h-4" />
               </Button>
-            </div>
-          </motion.div>
-
-          {/* Categories */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="-mt-10"
-          >
-            <div className="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto">
-              {categories.map((category, index) => {
-                const isSelected = selectedCategory === category.label;
-                return (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    onClick={() => setSelectedCategory(isSelected ? null : category.label)}
-                    className={`
-                      ${isSelected 
-                        ? `${category.borderColor} ${category.textColor} ${category.shadowColor} bg-white` 
-                        : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50 hover:text-gray-900 shadow-2xl shadow-neutral-400 hover:border-gray-300'
-                      } 
-                      transition-all rounded-full px-2 py-1.5 text-xs font-medium whitespace-nowrap
-                    `}
-                  >
-                    <category.icon className={`w-3.5 h-3.5 mr-1.5 transition-colors ${
-                      isSelected ? category.color : 'text-gray-400'
-                    }`} />
-                    {category.label}
-                  </Button>
-                );
-              })}
             </div>
           </motion.div>
 
@@ -420,20 +387,14 @@ export default function App() {
                   <div className="w-5 h-5 rounded-full bg-gray-200 animate-pulse"></div>
                 </div>
               ) : (
-                <motion.div
-                  animate={{ x: [0, -2400] }}
-                  transition={{ 
-                    duration: 60, 
-                    repeat: Infinity, 
-                    ease: "linear" 
-                  }}
-                  className="flex space-x-2 whitespace-nowrap pl-4"
+                <div
+                  className="flex space-x-2 whitespace-nowrap pl-4 overflow-x-auto"
                 >
                   {displayPrompts.map((prompt, index) => (
                     <div
                       key={`${prompt.id}-${index}`}
                       onClick={() => setSearchQuery(prompt.text)}
-                      className="bg-white border border-gray-200 rounded-2xl px-2 py-2 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-gray-300 text-wrap flex-shrink-0 w-64"
+                      className="bg-white border border-gray-200 rounded-2xl px-2 py-2 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-gray-300 text-wrap flex-shrink-0 w-48 md:w-64"
                     >
                       <div className="text-sm text-gray-700 mt-2 text-left leading-relaxed mb-2">
                         {prompt.text}
@@ -443,7 +404,7 @@ export default function App() {
                       </div>
                     </div>
                   ))}
-                </motion.div>
+                </div>
               )}
               <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-gray-50 to-transparent pointer-events-none" />
               <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-gray-50 to-transparent pointer-events-none" />

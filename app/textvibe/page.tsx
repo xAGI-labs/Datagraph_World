@@ -591,13 +591,7 @@ function TextVibeContent() {
                 transition={{ delay: 0.8, duration: 0.6 }}
                 className="w-full max-w-full overflow-x-auto pb-2 flex justify-center"
               >
-                <motion.div
-                  animate={{ x: [0, -2000] }}
-                  transition={{ 
-                    duration: 40, 
-                    repeat: Infinity, 
-                    ease: "linear" 
-                  }}
+                <div
                   className="flex space-x-3 whitespace-nowrap min-w-max px-1 justify-center"
                 >
                   {[...questionPills, ...questionPills].map((question, index) => (
@@ -609,7 +603,7 @@ function TextVibeContent() {
                       {question}
                     </button>
                   ))}
-                </motion.div>
+                </div>
               </motion.div>
 
               <div className="pt-4 text-gray-600 text-xs sm:text-sm w-full text-center flex justify-center">
@@ -690,7 +684,7 @@ function TextVibeContent() {
             transition={{ delay: 0.6, duration: 0.6 }}
             className="space-y-6"
           >
-            <div className="flex justify-center space-x-8">
+            <div className="flex justify-center space-x-4 sm:space-x-8">
               {selectedModels.map((modelId, index) => {
                 const model = availableModels.find(m => m.id === modelId)
                 const isActive = progress > (index + 1) * 30
@@ -706,7 +700,7 @@ function TextVibeContent() {
                   >
                     <div className="relative">
                       <motion.div
-                        className={`w-16 h-16 rounded-full flex items-center justify-center border-2 ${
+                        className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center border-2 ${
                           isCompleted 
                             ? 'bg-gradient-to-r from-green-500 to-emerald-500 border-green-400' 
                             : isActive 
@@ -1055,7 +1049,7 @@ function TextVibeContent() {
           </div>
 
           {/* Response Comparison - Full Height Cards */}
-          <div className="grid grid-cols-2 divide-x divide-amber-300/60 min-h-[calc(100vh-200px)] w-full max-w-5xl mx-auto overflow-x-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 divide-x divide-amber-300/60 min-h-[calc(100vh-200px)] w-full max-w-5xl mx-auto overflow-x-auto">
             {responses.map((response, index) => (
               <div key={response.modelId} className="flex flex-col min-w-0">
                 {/* Model Header - mobile friendly */}
@@ -1080,7 +1074,7 @@ function TextVibeContent() {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                     className="bg-white rounded-b-xl p-4 sm:p-6 border border-gray-200 hover:border-gray-300 transition-colors duration-200 min-w-0"
                   >
-                    <p className="text-gray-900 leading-relaxed whitespace-pre-wrap text-sm sm:text-sm text-xs">
+                    <p className="text-gray-900 leading-relaxed whitespace-pre-wrap text-xs sm:text-sm">
                       {response.response}
                     </p>
                   </motion.div>
@@ -1102,7 +1096,7 @@ function TextVibeContent() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 400, opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="w-96 bg-white border-l border-gray-200 flex flex-col h-screen sticky top-0"
+              className="fixed top-0 right-0 h-screen w-full md:w-96 bg-white border-l border-gray-200 flex flex-col z-50"
             >
               <div className="p-4 border-b border-gray-200 flex-shrink-0">
                 <div className="flex items-center justify-between">

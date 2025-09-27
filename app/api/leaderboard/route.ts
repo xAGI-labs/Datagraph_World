@@ -18,7 +18,7 @@ const MODEL_MAPPING: { [key: string]: string } = {
 async function fetchExternalBenchmarks() {
   try {
     const arenaResponse = await fetch(
-      "https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard/resolve/main/leaderboard_table_20241201.csv",
+      "https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard/resolve/main/arena_hard_auto_leaderboard_v0.1.csv",
       {
         headers: {
           "User-Agent": "Datagraph/1.0",
@@ -50,7 +50,7 @@ function parseArenaLeaderboard(csvText: string): { [key: string]: any } {
     if (values.length >= headers.length) {
       const modelName = values[0]?.replace(/"/g, "").trim();
       const eloScore = parseFloat(values[1]) || 0;
-      const rank = parseInt(values[2]) || i;
+      const rank = i;
 
       const mappedName = Object.entries(MODEL_MAPPING).find(([_, value]) =>
         modelName.toLowerCase().includes(value.toLowerCase())
@@ -196,7 +196,6 @@ export async function GET(request: NextRequest) {
     );
 
     const externalBenchmarks = await fetchExternalBenchmarks();
-    console.log("External benchmarks:", externalBenchmarks);
 
     const modelLabels: { [key: string]: { label: string; provider: string } } =
       {
@@ -296,14 +295,7 @@ export async function GET(request: NextRequest) {
                 avgResponseTime: responseTimeData?.avgResponseTime || 0,
                 recentActivity: recentActivity,
                 totalPoints: 0, // Now using World Chain payments instead
-                worldChainPayments:
-                  totalPaymentCount > 0
-                    ? Math.round(
-                        (stat._count.selectedModel / totalComparisons) *
-                          totalPayments *
-                          100
-                      ) / 100
-                    : 0,
+                worldChainPayments: 0,
                 category: category,
                 externalRank: externalData?.ranking || 999,
               };
@@ -380,16 +372,11 @@ export async function GET(request: NextRequest) {
         modelResponseTimes.length > 0
           ? Math.round(
               modelResponseTimes.reduce(
-                (sum, rt) => sum + rt.avgResponseTime,
+                (sum, rt) => sum + (rt.avgResponseTime || 0),
                 0
               ) / modelResponseTimes.length
             )
-          : Math.round(
-              leaderboardData.reduce(
-                (sum, model) => sum + model.avgResponseTime,
-                0
-              ) / (leaderboardData.length || 1)
-            ),
+          : 0,
       recentActivity: recentComparisons.length,
     };
 
