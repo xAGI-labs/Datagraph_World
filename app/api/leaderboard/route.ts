@@ -172,28 +172,40 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Get World Chain payment stats for each model
-    const paymentStats = await prisma.worldChainPayment.groupBy({
-      by: ["userId"],
-      where: {
-        status: "completed",
-      },
-      _sum: {
-        amount: true,
-      },
-      _count: {
-        id: true,
-      },
-    });
+    // Get World Chain payment stats for each model (with fallback for missing table)
+    let paymentStats: any[] = [];
+    let totalPayments = 0;
+    let totalPaymentCount = 0;
 
-    const totalPayments = paymentStats.reduce(
-      (sum, stat) => sum + (stat._sum.amount || 0),
-      0
-    );
-    const totalPaymentCount = paymentStats.reduce(
-      (sum, stat) => sum + stat._count.id,
-      0
-    );
+    try {
+      paymentStats = (await prisma.worldChainPayment.groupBy({
+        by: ["userId"],
+        where: {
+          status: "completed",
+        },
+        _sum: {
+          amount: true,
+        },
+        _count: {
+          id: true,
+        },
+      })) as any;
+
+      totalPayments = paymentStats.reduce(
+        (sum, stat) => sum + (stat._sum.amount || 0),
+        0
+      );
+      totalPaymentCount = paymentStats.reduce(
+        (sum, stat) => sum + stat._count.id,
+        0
+      );
+    } catch (error) {
+      console.log(
+        "WorldChainPayment table not found, using default values:",
+        error
+      );
+      // Continue with empty payment stats - table will be created by migration
+    }
 
     const externalBenchmarks = await fetchExternalBenchmarks();
 

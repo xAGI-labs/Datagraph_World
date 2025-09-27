@@ -41,8 +41,55 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
   const [isWorldApp, setIsWorldApp] = useState(false)
 
   useEffect(() => {
-    // Check if running inside World App
-    setIsWorldApp(MiniKit.isInstalled())
+    // Enhanced World App detection with multiple methods
+    const detectWorldApp = () => {
+      const miniKitInstalled = MiniKit.isInstalled()
+      
+      // Additional detection methods for better compatibility
+      const userAgent = navigator.userAgent.toLowerCase()
+      const isWorldAppUA = userAgent.includes('worldapp') || 
+                          userAgent.includes('world app') ||
+                          userAgent.includes('minikit')
+      
+      // Check for World App specific context
+      const hasWorldAppContext = typeof window !== 'undefined' && (
+        window.hasOwnProperty('worldapp') || 
+        window.hasOwnProperty('WorldApp') ||
+        window.hasOwnProperty('minikit') ||
+        // Check for World App iframe context
+        window.parent !== window || // Running in iframe
+        window.location.href.includes('world.org') ||
+        document.referrer.includes('worldapp') ||
+        document.referrer.includes('world.org')
+      )
+      
+      // Developer override
+      const devOverride = localStorage.getItem('world_app_dev_mode') === 'true'
+      
+      // Check URL parameters that might indicate World App
+      const urlParams = new URLSearchParams(window.location.search)
+      const hasWorldAppParams = urlParams.has('worldapp') || urlParams.has('miniapp')
+      
+      const detected = miniKitInstalled || isWorldAppUA || hasWorldAppContext || devOverride || hasWorldAppParams
+      
+      // Enhanced debug logging
+      console.log('🌍 World App Detection Debug:', {
+        miniKitInstalled,
+        isWorldAppUA,
+        hasWorldAppContext,
+        devOverride,
+        hasWorldAppParams,
+        userAgent: userAgent.slice(0, 100) + '...',
+        windowLocation: window.location.href,
+        documentReferrer: document.referrer,
+        isIframe: window.parent !== window,
+        finalDetection: detected
+      })
+      
+      return detected
+    }
+    
+    setIsWorldApp(detectWorldApp())
 
     // Load user from localStorage
     const savedUser = localStorage.getItem('worldauth_user')
@@ -56,16 +103,25 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
     action: string,
     signal?: string
   ): Promise<{ success: boolean; error?: string }> => {
+    const devMode = localStorage.getItem('world_app_dev_mode') === 'true'
+    
+    // More lenient check - allow verification if we detected World App OR dev mode
+    if (!MiniKit.isInstalled() && !isWorldApp && !devMode) {
+      return { success: false, error: 'Please open this app in World App to verify your identity' }
+    }
+    
     setIsLoading(true)
 
     try {
-      // Decide verification level
-      const verificationLevel = isWorldApp ? VerificationLevel.Orb : VerificationLevel.Orb // fallback to Orb in browser
-      const { finalPayload } = await MiniKit.commandsAsync.verify({
+      console.log('🔐 Attempting World ID verification:', { action, signal, isWorldApp, devMode })
+      
+      const verifyPayload: VerifyCommandInput = {
         action,
         signal,
-        verification_level: verificationLevel,
-      })
+        verification_level: VerificationLevel.Orb,
+      }
+
+      const { finalPayload } = await MiniKit.commandsAsync.verify(verifyPayload)
 
       if (finalPayload.status === 'error') {
         return { success: false, error: 'Verification failed' }
@@ -168,7 +224,12 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
 
   const toggleDevMode = () => {
     const currentMode = localStorage.getItem('world_app_dev_mode') === 'true'
-    localStorage.setItem('world_app_dev_mode', (!currentMode).toString())
+    const newMode = !currentMode
+    localStorage.setItem('world_app_dev_mode', newMode.toString())
+    
+    console.log(`🔧 Developer Mode ${newMode ? 'ENABLED' : 'DISABLED'}`)
+    
+    // Force a hard refresh to re-evaluate World App detection
     window.location.reload()
   }
 
