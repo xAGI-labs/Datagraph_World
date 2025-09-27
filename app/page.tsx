@@ -175,34 +175,32 @@ export default function App() {
       <div className="absolute inset-0 bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40" />
 
       {/* Header with Auth and Profile */}
-      <header className="relative z-10 pt-4 pr-4">
-        <div className="flex justify-end items-center space-x-3">
+      <header className="relative z-10 p-4">
+        <div className="flex justify-end items-center space-x-2">
           {/* When not signed in */}
           {!user?.worldIdVerified && (
-            <div className="flex space-x-2">
-              <Button 
-                onClick={() => router.push('/onboarding')}
-                variant="outline"
-                size="sm"
-                className="bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 text-gray-700 hover:text-gray-900"
-              >
-                <LogIn className="w-4 h-4 mr-2" />
-                Get Verified
-              </Button>
-            </div>
+            <Button 
+              onClick={() => router.push('/onboarding')}
+              variant="outline"
+              size="sm"
+              className="bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 text-gray-700 hover:text-gray-900 text-xs px-3 py-1 h-auto"
+            >
+              <LogIn className="w-3 h-3 mr-1.5" />
+              Get Verified
+            </Button>
           )}
           
           {/* When signed in - Profile and Dashboard */}
           {user?.worldIdVerified && (
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
               {/* Dashboard Button */}
               <Button 
                 onClick={() => router.push('/dashboard')}
                 variant="outline"
                 size="sm"
-                className="bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 text-gray-700 hover:text-gray-900"
+                className="bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 text-gray-700 hover:text-gray-900 text-xs px-3 py-1 h-auto"
               >
-                <BarChart3 className="w-4 h-4 mr-2" />
+                <BarChart3 className="w-3 h-3 mr-1.5" />
                 Dashboard
               </Button>
 
@@ -211,9 +209,9 @@ export default function App() {
                 onClick={() => router.push('/points')}
                 variant="outline"
                 size="sm"
-                className="bg-purple-500/10 backdrop-blur-md border border-purple-200/50 hover:bg-purple-500/20 text-purple-700 hover:text-purple-900"
+                className="bg-purple-500/10 backdrop-blur-md border border-purple-200/50 hover:bg-purple-500/20 text-purple-700 hover:text-purple-900 text-xs px-3 py-1 h-auto"
               >
-                <Brain className="w-4 h-4 mr-2" />
+                <Brain className="w-3 h-3 mr-1.5" />
                 Trade VP
               </Button>
 
@@ -221,19 +219,16 @@ export default function App() {
               <div className="relative profile-menu-container">
                 <button
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className="flex items-center space-x-2 p-2 rounded-full bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 transition-all duration-200"
+                  className="flex items-center space-x-2 p-1.5 rounded-full bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 transition-all duration-200"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                    <User className="w-5 h-5 text-white" />
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                    <User className="w-4 h-4 text-white" />
                   </div>
-                  <span className="hidden md:block text-sm font-medium text-gray-700">
-                    {user.name?.split(' ')[0] || 'User'}
-                  </span>
                 </button>
 
                 {/* Profile Dropdown */}
                 {showProfileMenu && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-lg shadow-lg py-2 z-50">
+                  <div className="absolute right-0 mt-2 w-screen sm:w-56 bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-lg shadow-lg py-2 z-50">
                     <div className="px-4 py-2 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900">{user.name || 'User'}</p>
                       <p className="text-xs text-gray-500">{user.email || ''}</p>
@@ -297,35 +292,35 @@ export default function App() {
       </header>
       
       {/* Main Content */}
-      <main className="relative z-10 max-w-3xl mx-auto px-6 pt-16 pb-11">
+      <main className="relative z-10 max-w-3xl mx-auto px-4 pt-8 sm:pt-16 pb-11">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center space-y-16"
+          className="text-center space-y-12 sm:space-y-16"
         >
           {/* Hero Section */}
-          <div className="space-y-4 pt-8">
+          <div className="space-y-3 pt-4 sm:pt-8">
             <div className="flex justify-center mb-2">
               <Image
                 src="/assets/inverted_dg.png"
                 alt="Datagraph"
-                width={44}
-                height={44}
+                width={40}
+                height={40}
                 className="rounded-lg"
               />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
+            <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-gray-900">
               Datagraph
             </h1>
-            <p className="text-lg text-gray-600 max-w-lg mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-gray-600 max-w-md mx-auto leading-relaxed">
               Join voters to discover which AI is the best at{" "}
-              <span className="inline-block relative h-8.5 min-w-[6rem] overflow-hidden align-middle">
+              <span className="inline-block relative h-7 min-w-[5rem] overflow-hidden align-middle">
                 <motion.span
                   key={currentWordIndex}
-                  initial={{ y: 24, opacity: 0 }}
+                  initial={{ y: 22, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -24, opacity: 0 }}
+                  exit={{ y: -22, opacity: 0 }}
                   transition={{ 
                     duration: 0.4,
                     ease: [0.25, 0.46, 0.45, 0.94]
@@ -345,7 +340,7 @@ export default function App() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="w-full max-w-2xl mx-auto"
           >
-            <div className="relative -mt-10">
+            <div className="relative -mt-8 sm:-mt-10">
               <Textarea
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -358,7 +353,7 @@ export default function App() {
                   }
                 }}
                 placeholder="Compare AI models for your next project"
-                className="w-full h-24 md:h-36 bg-white border-amber-600/40 border-2 text-gray-900 placeholder-gray-400 text-base p-4 pr-14 rounded-xl resize-none transition-all duration-200 shadow-sm"
+                className="w-full h-28 sm:h-36 bg-white border-amber-600/40 border-2 text-gray-900 placeholder-gray-400 text-sm sm:text-base p-3 pr-12 sm:p-4 sm:pr-14 rounded-xl resize-none transition-all duration-200 shadow-sm"
                 style={{
                   borderColor: 'var(--focus-border-color)'
                 } as React.CSSProperties}
@@ -367,9 +362,9 @@ export default function App() {
                 onClick={handleSubmitPrompt}
                 disabled={!searchQuery.trim()}
                 size="sm"
-                className="absolute bottom-3 right-3 bg-gray-800 text-white hover:bg-gray-700 rounded-full p-4 disabled:opacity-50 transition-all duration-200"
+                className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 bg-gray-800 text-white hover:bg-gray-700 rounded-full p-3 sm:p-4 disabled:opacity-50 transition-all duration-200"
               >
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </Button>
             </div>
           </motion.div>
@@ -379,24 +374,24 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
-            className="w-full max-w-screen-2xl mx-auto overflow-hidden -mt-10"
+            className="w-full max-w-screen-2xl mx-auto overflow-hidden -mt-8 sm:-mt-10"
           >
             <div className="relative">
               {isLoadingPrompts ? (
-                <div className="flex justify-center py-8">
-                  <div className="w-5 h-5 rounded-full bg-gray-200 animate-pulse"></div>
+                <div className="flex justify-center py-6">
+                  <div className="w-4 h-4 rounded-full bg-gray-200 animate-pulse"></div>
                 </div>
               ) : (
                 <div
-                  className="flex space-x-2 whitespace-nowrap pl-4 overflow-x-auto"
+                  className="flex space-x-3 whitespace-nowrap pl-4 overflow-x-auto"
                 >
                   {displayPrompts.map((prompt, index) => (
                     <div
                       key={`${prompt.id}-${index}`}
                       onClick={() => setSearchQuery(prompt.text)}
-                      className="bg-white border border-gray-200 rounded-2xl px-2 py-2 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-gray-300 text-wrap flex-shrink-0 w-48 md:w-64"
+                      className="bg-white border border-gray-200 rounded-xl px-3 py-2 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-gray-300 text-wrap flex-shrink-0 w-40 sm:w-64"
                     >
-                      <div className="text-sm text-gray-700 mt-2 text-left leading-relaxed mb-2">
+                      <div className="text-xs sm:text-sm text-gray-700 mt-1 text-left leading-relaxed mb-1.5">
                         {prompt.text}
                       </div>
                       <div className="text-xs text-gray-400 text-left">
@@ -406,13 +401,13 @@ export default function App() {
                   ))}
                 </div>
               )}
-              <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-gray-50 to-transparent pointer-events-none" />
-              <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-gray-50 to-transparent pointer-events-none" />
+              <div className="absolute left-0 top-0 bottom-0 w-10 bg-gradient-to-r from-gray-50 to-transparent pointer-events-none" />
+              <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-gray-50 to-transparent pointer-events-none" />
             </div>
           </motion.div>
 
           {/* Helper Text */}
-          <div className="text-sm text-gray-400 space-y-1 -mt-5">
+          <div className="text-xs sm:text-sm text-gray-400 space-y-1 -mt-4 sm:-mt-5">
             <div>We&apos;ll automatically choose the best AI models for your prompt</div>
           </div>
 
@@ -420,7 +415,7 @@ export default function App() {
       </main>
 
       {/* Model Performance Section */}
-      <section className="relative z-10 py-20 -mt-24">
+      <section className="relative z-10 py-16 sm:py-20 -mt-20 sm:-mt-24">
         <ModelPerformance />
       </section>
 

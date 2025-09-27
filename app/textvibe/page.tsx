@@ -506,7 +506,7 @@ function TextVibeContent() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
-        className="min-h-screen bg-gray-50 text-gray-900 flex flex-col w-full max-w-full items-center justify-center relative"
+        className="min-h-screen bg-gray-50 text-gray-900 flex flex-col w-full max-w-full items-center justify-center relative p-4"
       >
         <div className="absolute inset-0 bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40" />
         <div className="relative z-10 w-full flex flex-col items-center justify-center">
@@ -515,7 +515,7 @@ function TextVibeContent() {
             initial={{ y: -50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="flex flex-col items-center justify-center px-4 py-4 md:p-6 w-full max-w-full"
+            className="flex flex-col items-center justify-center px-4 py-2 md:p-6 w-full max-w-full"
           > 
             <motion.div 
               initial={{ scale: 0 }}
@@ -523,30 +523,30 @@ function TextVibeContent() {
               transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
               className="flex items-center space-x-2 justify-center"
             >
-              <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">AI</span>
+              <div className="w-7 h-7 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-xs">AI</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">TextVibe</span>
+              <span className="text-lg font-bold text-gray-900">TextVibe</span>
             </motion.div>
           </motion.header>
 
           {/* Main Content */}
-          <main className="flex-1 flex flex-col items-center justify-center px-2 sm:px-4 text-center w-full max-w-full pt-4">
-            <div className="w-full max-w-2xl mx-auto space-y-6 md:space-y-8 flex flex-col items-center justify-center">
+          <main className="flex-1 flex flex-col items-center justify-center px-2 sm:px-4 text-center w-full max-w-full pt-2">
+            <div className="w-full max-w-2xl mx-auto space-y-4 md:space-y-6 flex flex-col items-center justify-center">
               <motion.div 
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="space-y-3 md:space-y-4 flex flex-col items-center justify-center"
+                className="space-y-2 md:space-y-3 flex flex-col items-center justify-center"
               >
-                <h1 className="text-xl sm:text-2xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-600 bg-clip-text text-transparent break-words leading-tight text-center">
+                <h1 className="text-lg sm:text-xl md:text-3xl font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-600 bg-clip-text text-transparent break-words leading-tight text-center">
                   Hey, welcome to TextVibe!
                 </h1>
                 <motion.p 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6, duration: 0.6 }}
-                  className="text-base sm:text-lg text-gray-600 max-w-xl mx-auto text-center"
+                  className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto text-center"
                 >
                   Write a prompt here and get the best responses from top AIs
                 </motion.p>
@@ -571,15 +571,15 @@ function TextVibeContent() {
                         }
                       }
                     }}
-                    className="w-full min-h-[80px] sm:min-h-[120px] bg-white border-2 border-amber-600/40 text-gray-900 placeholder-gray-400 text-base sm:text-lg p-4 sm:p-6 pr-14 sm:pr-16 rounded-2xl resize-none focus:border-orange-500 focus:ring-orange-500 transition-all duration-300 shadow-sm"
+                    className="w-full min-h-[70px] sm:min-h-[100px] bg-white border-2 border-amber-600/40 text-gray-900 placeholder-gray-400 text-sm sm:text-base p-3 pr-12 sm:p-4 sm:pr-16 rounded-xl resize-none focus:border-orange-500 focus:ring-orange-500 transition-all duration-300 shadow-sm"
                   />
                   <div className="flex justify-center">
                     <Button
                       onClick={() => handleSubmitPrompt()}
                       disabled={!prompt.trim()}
-                      className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 rounded-full p-3 shadow-lg hover:shadow-orange-500/25 transition-all duration-300"
+                      className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 rounded-full p-2.5 shadow-lg hover:shadow-orange-500/25 transition-all duration-300"
                     >
-                      <Send className="w-5 h-5" />
+                      <Send className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
@@ -592,13 +592,13 @@ function TextVibeContent() {
                 className="w-full max-w-full overflow-x-auto pb-2 flex justify-center"
               >
                 <div
-                  className="flex space-x-3 whitespace-nowrap min-w-max px-1 justify-center"
+                  className="flex space-x-2 whitespace-nowrap min-w-max px-1 justify-center"
                 >
                   {[...questionPills, ...questionPills].map((question, index) => (
                     <button
                       key={index}
                       onClick={() => setPrompt(question)}
-                      className="bg-white border border-gray-200 rounded-full px-4 py-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-all duration-300 min-w-max shadow-sm"
+                      className="bg-white border border-gray-200 rounded-full px-3 py-1.5 text-xs text-gray-700 hover:text-gray-900 hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-all duration-300 min-w-max shadow-sm"
                     >
                       {question}
                     </button>
@@ -606,10 +606,10 @@ function TextVibeContent() {
                 </div>
               </motion.div>
 
-              <div className="pt-4 text-gray-600 text-xs sm:text-sm w-full text-center flex justify-center">
+              <div className="pt-2 text-gray-600 text-xs sm:text-sm w-full text-center flex justify-center">
                 We'll automatically choose the best AI models for your prompt
               </div>
-              <div className="text-gray-500 text-xs w-full text-center pb-4 flex justify-center">
+              <div className="text-gray-500 text-xs w-full text-center pb-2 flex justify-center">
                 Press Enter to send • Shift+Enter for new line • Click any question above to try it
               </div>
             </div>
@@ -626,19 +626,19 @@ function TextVibeContent() {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 1.05 }}
         transition={{ duration: 0.5 }}
-        className="min-h-screen bg-gray-50 text-gray-900 flex flex-col items-center justify-center px-6 relative"
+        className="min-h-screen bg-gray-50 text-gray-900 flex flex-col items-center justify-center px-4 relative"
       >
         <div className="absolute inset-0 bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40" />
-        <div className="relative z-10 max-w-3xl mx-auto text-center space-y-8">
+        <div className="relative z-10 max-w-3xl mx-auto text-center space-y-6">
           {/* Main Title */}
           <motion.div 
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="space-y-4"
+            className="space-y-3"
           >
             <motion.h1 
-              className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-orange-600 to-red-600 bg-clip-text text-transparent"
+              className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 via-orange-600 to-red-600 bg-clip-text text-transparent"
               animate={{
                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
               }}
@@ -654,7 +654,7 @@ function TextVibeContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="text-lg text-gray-600"
+              className="text-base text-gray-600"
             >
               Our AI models are crafting the perfect responses for you
             </motion.p>
@@ -665,14 +665,14 @@ function TextVibeContent() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="bg-white border border-gray-200 rounded-2xl p-6 text-left shadow-lg"
+            className="bg-white border border-gray-200 rounded-xl p-4 text-left shadow-lg"
           >
             <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
-                <MessageSquare className="w-4 h-4 text-white" />
+              <div className="w-7 h-7 bg-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <MessageSquare className="w-3.5 h-3.5 text-white" />
               </div>
               <div className="flex-1">
-                <p className="text-gray-700 leading-relaxed">{prompt}</p>
+                <p className="text-gray-700 leading-relaxed text-sm">{prompt}</p>
               </div>
             </div>
           </motion.div>
@@ -682,9 +682,9 @@ function TextVibeContent() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="space-y-6"
+            className="space-y-4"
           >
-            <div className="flex justify-center space-x-4 sm:space-x-8">
+            <div className="flex justify-center space-x-4 sm:space-x-6">
               {selectedModels.map((modelId, index) => {
                 const model = availableModels.find(m => m.id === modelId)
                 const isActive = progress > (index + 1) * 30
@@ -696,11 +696,11 @@ function TextVibeContent() {
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.8 + index * 0.2, type: "spring", stiffness: 200 }}
-                    className="flex flex-col items-center space-y-3"
+                    className="flex flex-col items-center space-y-2"
                   >
                     <div className="relative">
                       <motion.div
-                        className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center border-2 ${
+                        className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center border-2 ${
                           isCompleted 
                             ? 'bg-gradient-to-r from-green-500 to-emerald-500 border-green-400' 
                             : isActive 
@@ -723,7 +723,7 @@ function TextVibeContent() {
                             animate={{ scale: 1, rotate: 0 }}
                             transition={{ duration: 0.5, type: "spring" }}
                           >
-                            <CheckCircle className="w-8 h-8 text-white" />
+                            <CheckCircle className="w-6 h-6 text-white" />
                           </motion.div>
                         ) : (
                           <motion.div
@@ -746,7 +746,7 @@ function TextVibeContent() {
                       {/* Processing indicator */}
                       {isActive && !isCompleted && (
                         <motion.div
-                          className="absolute -inset-2 border-2 border-dashed border-orange-400 rounded-2xl"
+                          className="absolute -inset-1.5 border-2 border-dashed border-orange-400 rounded-xl"
                           animate={{ rotate: 360 }}
                           transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                         />
@@ -754,12 +754,12 @@ function TextVibeContent() {
                     </div>
                     
                     <div className="text-center">
-                      <p className={`text-sm font-medium ${
+                      <p className={`text-xs font-medium ${
                         isCompleted ? 'text-green-600' : isActive ? 'text-orange-600' : 'text-gray-500'
                       }`}>
                         {model?.label}
                       </p>
-                      <p className="text-xs text-gray-400 mt-1">
+                      <p className="text-2xs text-gray-400 mt-0.5">
                         {isCompleted ? 'Complete' : isActive ? 'Processing...' : 'Waiting'}
                       </p>
                     </div>
@@ -773,9 +773,9 @@ function TextVibeContent() {
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ delay: 1, duration: 0.6 }}
-              className="space-y-2"
+              className="space-y-1.5"
             >
-              <div className="relative w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="relative w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
                 <motion.div
                   className="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 rounded-full"
                   initial={{ width: 0 }}
@@ -783,7 +783,7 @@ function TextVibeContent() {
                   transition={{ duration: 0.5, ease: "easeOut" }}
                 />
                 <motion.div
-                  className="absolute top-0 h-full w-20 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full"
+                  className="absolute top-0 h-full w-16 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full"
                   animate={{ 
                     x: progress > 0 ? ["-100%", "400%"] : "-100%"
                   }}
@@ -794,7 +794,7 @@ function TextVibeContent() {
                   }}
                 />
               </div>
-              <div className="flex justify-between text-xs text-gray-500">
+              <div className="flex justify-between text-2xs text-gray-500">
                 <span>0%</span>
                 <span className="font-medium text-orange-600">{Math.round(progress)}%</span>
                 <span>100%</span>
@@ -809,7 +809,7 @@ function TextVibeContent() {
               className="text-center"
             >
               <motion.p 
-                className="text-gray-600 text-sm"
+                className="text-gray-600 text-xs"
                 key={Math.floor(progress / 25)}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -835,9 +835,9 @@ function TextVibeContent() {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 1.1 }}
         transition={{ duration: 0.6, type: "spring", stiffness: 200 }}
-        className="min-h-screen bg-zinc-950 text-white flex flex-col items-center justify-center px-6"
+        className="min-h-screen bg-zinc-950 text-white flex flex-col items-center justify-center px-4"
       >
-        <div className="max-w-2xl mx-auto text-center space-y-8">
+        <div className="max-w-2xl mx-auto text-center space-y-6">
           <motion.div 
             initial={{ y: -50, opacity: 0, rotateX: 45 }}
             animate={{ y: 0, opacity: 1, rotateX: 0 }}
@@ -859,14 +859,14 @@ function TextVibeContent() {
                 scale: { duration: 0.3 },
                 rotateY: { duration: 0.3 }
               }}
-              className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl p-8 shadow-2xl cursor-pointer"
+              className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-6 shadow-2xl cursor-pointer"
             >
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <motion.h3 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5, duration: 0.6 }}
-                  className="text-xl font-bold text-white"
+                  className="text-base font-bold text-white"
                 >
                   To continue, scratch here & win Vibe credits
                 </motion.h3>
@@ -874,13 +874,13 @@ function TextVibeContent() {
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.7, duration: 0.5, type: "spring", stiffness: 200 }}
-                  className="bg-gradient-to-r from-gray-300 to-gray-400 rounded-2xl h-16 flex items-center justify-center relative overflow-hidden"
+                  className="bg-gradient-to-r from-gray-300 to-gray-400 rounded-xl h-14 flex items-center justify-center relative overflow-hidden"
                 >
                   <motion.div 
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 1, duration: 0.6 }}
-                    className="text-gray-600 text-lg font-bold z-10"
+                    className="text-gray-600 text-base font-bold z-10"
                   >
                     +{totalPoints} POINTS
                   </motion.div>
@@ -905,13 +905,13 @@ function TextVibeContent() {
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
-            className="space-y-4"
+            className="space-y-3"
           >
             <motion.h1 
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.6, type: "spring", stiffness: 150 }}
-              className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-orange-200 to-red-200 bg-clip-text text-transparent"
+              className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-orange-200 to-red-200 bg-clip-text text-transparent"
             >
               Your feedback comes with rewards!
             </motion.h1>
@@ -919,7 +919,7 @@ function TextVibeContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.6 }}
-              className="space-y-2 text-lg text-zinc-300"
+              className="space-y-1.5 text-base text-zinc-300"
             >
               <motion.p
                 initial={{ x: -20, opacity: 0 }}
@@ -945,7 +945,7 @@ function TextVibeContent() {
             transition={{ delay: 1.4, duration: 0.6, type: "spring", stiffness: 200 }}
             className="w-full max-w-md mx-auto"
           >
-            <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-2.5 bg-gray-200 rounded-full overflow-hidden">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
@@ -972,7 +972,7 @@ function TextVibeContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 1, 0] }}
             transition={{ delay: 2, duration: 1, repeat: Infinity }}
-            className="text-gray-500 text-sm"
+            className="text-gray-500 text-xs"
           >
             Returning to dashboard in a moment...
           </motion.p>
@@ -982,9 +982,9 @@ function TextVibeContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col overflow-x-hidden relative">
+    <div className="h-screen bg-gray-50 text-gray-900 flex flex-col overflow-hidden relative">
       <div className="absolute inset-0 bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40" />
-      <div className="relative z-10 flex flex-col min-h-screen">
+      <div className="relative z-10 flex flex-col h-full">
       {/* Custom scrollbar styles */}
       <style jsx>{`
         .custom-scrollbar::-webkit-scrollbar {
@@ -1004,23 +1004,23 @@ function TextVibeContent() {
       `}</style>
       
       {/* Header - Fixed */}
-      <header className="sticky top-0 z-40 bg-gray-50/95 backdrop-blur-sm border-b border-gray-200">
-        <div className="flex justify-between items-center p-4">
+      <header className="sticky top-0 z-40 bg-gray-50/95 backdrop-blur-sm border-b border-gray-200 flex-shrink-0">
+        <div className="flex justify-between items-center p-3 sm:p-4">
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">AI</span>
+              <span className="text-white font-bold text-xs">AI</span>
             </div>
-            <p className="text-xl font-bold text-gray-900">TextVibe</p>
+            <p className="text-lg font-bold text-gray-900">TextVibe</p>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1 sm:space-x-2">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowChatHistory(!showChatHistory)}
-              className="text-gray-500 hover:bg-white hover:text-black"
+              className="text-gray-500 hover:bg-white hover:text-black text-xs px-2 sm:px-3"
             >
-              <History className="w-4 h-4 mr-2" />
+              <History className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               History
             </Button>
            
@@ -1028,7 +1028,7 @@ function TextVibeContent() {
               variant="destructive"
               size="sm"
               onClick={() => setShowEndSessionModal(true)}
-              className="text-white bg-red-600 hover:bg-red-700"
+              className="text-white bg-red-600 hover:bg-red-700 text-xs px-2 sm:px-3"
             >
               End Session
             </Button>
@@ -1036,43 +1036,43 @@ function TextVibeContent() {
         </div>
       </header>
 
-      <div className="flex-1 flex justify-center w-full">
+      <div className="flex-1 flex flex-col md:flex-row justify-center w-full overflow-hidden">
         {/* Main Content - Scrollable */}
-        <main className="flex-1 flex flex-col w-full max-w-5xl mx-auto">
+        <main className="flex-1 flex flex-col w-full max-w-5xl mx-auto overflow-hidden">
           {/* Prompt Section */}
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-3 sm:p-4 border-b border-gray-200 flex-shrink-0">
             <div className="max-w-4xl mx-auto">
-              <div className="bg-amber-500 rounded-lg p-4 border-2 border-amber-500 shadow-lg">
-                <p className="text-white text-center font-semibold text-base drop-shadow-sm">{prompt}</p>
+              <div className="bg-amber-500 rounded-lg p-3 sm:p-4 border-2 border-amber-500 shadow-lg">
+                <p className="text-white text-center font-semibold text-sm sm:text-base drop-shadow-sm">{prompt}</p>
               </div>
             </div>
           </div>
 
           {/* Response Comparison - Full Height Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 divide-x divide-amber-300/60 min-h-[calc(100vh-200px)] w-full max-w-5xl mx-auto overflow-x-auto">
+          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 md:divide-x md:divide-amber-300/60 w-full max-w-5xl mx-auto overflow-hidden">
             {responses.map((response, index) => (
-              <div key={response.modelId} className="flex flex-col min-w-0">
+              <div key={response.modelId} className="flex flex-col min-w-0 h-full overflow-hidden">
                 {/* Model Header - mobile friendly */}
-                <div className="flex flex-col sm:flex-row items-center justify-center sm:space-x-2 space-y-2 sm:space-y-0 py-4 bg-gray-100 rounded-t-xl border-b border-gray-200">
+                <div className="flex flex-col sm:flex-row items-center justify-center sm:space-x-2 space-y-1 sm:space-y-0 py-3 sm:py-4 bg-gray-100 rounded-t-xl border-b border-gray-200 flex-shrink-0">
                   <div className="flex items-center space-x-2">
                     {getModelIcon(response.provider)}
-                    <span className="font-medium text-gray-900 text-base sm:text-base text-sm bg-white px-3 py-1 rounded-lg shadow-md border border-gray-200">
+                    <span className="font-medium text-gray-900 text-sm sm:text-base bg-white px-2 py-1 sm:px-3 rounded-lg shadow-md border border-gray-200">
                       {response.modelLabel}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-gray-500 text-xs">•</span>
-                    <span className="text-xs text-gray-500">{response.responseTime}ms</span>
+                    <span className="text-gray-500 text-2xs sm:text-xs">•</span>
+                    <span className="text-2xs sm:text-xs text-gray-500">{response.responseTime}ms</span>
                   </div>
                 </div>
 
                 {/* Response Content - Full Height */}
-                <div className="flex-1 p-4 sm:p-6 min-w-0">
+                <div className="flex-1 p-3 sm:p-6 min-w-0 overflow-y-auto custom-scrollbar">
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="bg-white rounded-b-xl p-4 sm:p-6 border border-gray-200 hover:border-gray-300 transition-colors duration-200 min-w-0"
+                    className="bg-white rounded-b-xl p-3 sm:p-6 border border-gray-200 hover:border-gray-300 transition-colors duration-200 min-w-0 h-full"
                   >
                     <p className="text-gray-900 leading-relaxed whitespace-pre-wrap text-xs sm:text-sm">
                       {response.response}
@@ -1088,11 +1088,11 @@ function TextVibeContent() {
         <AnimatePresence>
           {showChatHistory && (
             <motion.div
-              initial={{ x: 400, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 400, opacity: 0 }}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed top-0 right-0 h-screen w-full md:w-96 bg-white border-l border-gray-200 flex flex-col z-50"
+              className="fixed top-0 right-0 h-full w-full md:w-96 bg-white border-l border-gray-200 flex flex-col z-50"
             >
               <div className="p-4 border-b border-gray-200 flex-shrink-0">
                 <div className="flex items-center justify-between">
@@ -1110,7 +1110,7 @@ function TextVibeContent() {
               
               <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
                 {chatHistory.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {chatHistory.map((item) => (
                       <div
                         key={item.id}
@@ -1121,7 +1121,7 @@ function TextVibeContent() {
                           setShowChatHistory(false)
                         }}
                       >
-                        <p className="text-sm text-gray-900 mb-2 line-clamp-2">
+                        <p className="text-sm text-gray-900 mb-1.5 line-clamp-2">
                           {item.prompt}
                         </p>
                         <div className="flex items-center justify-between">
@@ -1141,8 +1141,8 @@ function TextVibeContent() {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    <History className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No chat history yet</p>
+                    <History className="w-10 h-10 mx-auto mb-3 opacity-50" />
+                    <p className="text-sm">No chat history yet</p>
                   </div>
                 )}
               </div>
@@ -1162,47 +1162,41 @@ function TextVibeContent() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 100, opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="fixed bottom-24 sm:bottom-20 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"
+                className="fixed bottom-20 sm:bottom-16 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"
               >
-                <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-2 shadow-2xl border border-gray-200/50 grid grid-cols-[1fr,auto,1fr] items-center gap-2">
+                <div className="bg-white/70 backdrop-blur-xl rounded-xl p-1.5 shadow-2xl border border-gray-200/50 grid grid-cols-[1fr,auto,1fr] items-center gap-1.5">
                   <Button
                     onClick={() => handleFloatingBarSelection('left')}
-                    className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-xl w-full flex items-center justify-center text-base font-semibold transition-all duration-300"
+                    className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2.5 rounded-lg w-full flex items-center justify-center text-sm font-semibold transition-all duration-300"
                   >
-                    <ChevronLeft className="w-5 h-5 mr-2" />
+                    <ChevronLeft className="w-4 h-4 mr-1.5" />
                     <span>Model A</span>
                   </Button>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5">
                     <Button
                       onClick={() => handleFloatingBarSelection('tie')}
-                      className="bg-gray-200/50 hover:bg-gray-200 text-gray-700 p-3 rounded-xl flex items-center justify-center text-sm border border-gray-300/50 transition-all duration-300"
+                      className="bg-gray-200/50 hover:bg-gray-200 text-gray-700 p-2.5 rounded-lg flex items-center justify-center text-xs border border-gray-300/50 transition-all duration-300"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     </Button>
                     <Button
                       onClick={() => handleFloatingBarSelection('both-bad')}
-                      className="bg-gray-200/50 hover:bg-gray-200 text-gray-700 p-3 rounded-xl flex items-center justify-center text-sm border border-gray-300/50 transition-all duration-300"
+                      className="bg-gray-200/50 hover:bg-gray-200 text-gray-700 p-2.5 rounded-lg flex items-center justify-center text-xs border border-gray-300/50 transition-all duration-300"
                     >
-                      <X className="w-5 h-5" />
+                      <X className="w-4 h-4" />
                     </Button>
                   </div>
                   <Button
                     onClick={() => handleFloatingBarSelection('right')}
-                    className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-xl w-full flex items-center justify-center text-base font-semibold transition-all duration-300"
+                    className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2.5 rounded-lg w-full flex items-center justify-center text-sm font-semibold transition-all duration-300"
                   >
                     <span>Model B</span>
-                    <ChevronRight className="w-5 h-5 ml-2" />
+                    <ChevronRight className="w-4 h-4 ml-1.5" />
                   </Button>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-
-
-
-
-
-
 
           {/* FollowUpInput is always visible on comparison screen */}
           <motion.div
@@ -1210,12 +1204,10 @@ function TextVibeContent() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className={`fixed ${showFloatingBar ? 'bottom-40 sm:bottom-36' : 'bottom-6'} left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl px-4`}
+            className={`fixed ${showFloatingBar ? 'bottom-36 sm:bottom-32' : 'bottom-4'} left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl px-4`}
           >
             <FollowUpInput onSubmit={handleFollowUpSubmit} isSubmitting={isGenerating} />
           </motion.div>
-
-
 
           {/* Feedback Modal Floating - always rendered when showFeedbackDetails is true */}
           <AnimatePresence>
@@ -1230,10 +1222,10 @@ function TextVibeContent() {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-200"
+                  className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200"
                 >
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-2xl font-bold text-gray-900">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-gray-900">
                       Why was {responses.find(r => r.modelId === selectedResponse)?.modelLabel} better?
                     </h3>
                     <Button
@@ -1252,9 +1244,9 @@ function TextVibeContent() {
                     </Button>
                   </div>
 
-                  <div className="space-y-6">
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium text-gray-700">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-gray-700">
                         Quick feedback tags
                       </label>
                       <div className="flex flex-wrap gap-2">
@@ -1262,7 +1254,7 @@ function TextVibeContent() {
                           <button
                             key={pill.label}
                             onClick={() => handleFeedbackPillClick(pill)}
-                            className={`px-3 py-2 rounded-full text-sm transition-all duration-200 border flex items-center space-x-2 ${
+                            className={`px-2.5 py-1.5 rounded-full text-xs transition-all duration-200 border flex items-center space-x-1.5 ${
                               selectedFeedbackPills.includes(pill.label)
                                 ? 'bg-orange-500 text-white border-orange-500'
                                 : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100 hover:border-orange-500/50'
@@ -1275,8 +1267,8 @@ function TextVibeContent() {
                       </div>
                     </div>
 
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium text-gray-700">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-gray-700">
                         Additional feedback (optional)
                       </label>
                       <Textarea
@@ -1288,7 +1280,7 @@ function TextVibeContent() {
                             setSelectedFeedbackPills([])
                           }
                         }}
-                        className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 resize-none min-h-[100px]"
+                        className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 resize-none min-h-[80px] text-sm"
                       />
                     </div>
 
@@ -1298,11 +1290,11 @@ function TextVibeContent() {
                         // Do NOT close modal here
                       }}
                       disabled={isSubmitting}
-                      className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 py-3"
+                      className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 py-2.5 text-sm"
                     >
                       {isSubmitting ? (
                         <div className="flex items-center space-x-2">
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                           <span>Submitting...</span>
                         </div>
                       ) : (
@@ -1336,26 +1328,26 @@ function TextVibeContent() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-200"
+              className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200"
             >
-              <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <div className="text-center mb-4">
+                <h3 className="text-lg font-bold text-gray-900 mb-1.5">
                   Provide the correct answer
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-sm">
                   Help improve AI responses by sharing what you think the correct answer should be
                 </p>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <Textarea
                   placeholder="Write your correct answer here..."
                   value={userCorrectAnswer}
                   onChange={(e) => setUserCorrectAnswer(e.target.value)}
-                  className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 resize-none min-h-[120px]"
+                  className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 resize-none min-h-[100px] text-sm"
                 />
                 
-                <div className="flex justify-center space-x-4">
+                <div className="flex justify-center space-x-3">
                   <Button
                     onClick={() => {
                       setShowNeitherOption(false)
@@ -1363,7 +1355,7 @@ function TextVibeContent() {
                       setShowFloatingBar(true)
                     }}
                     variant="outline"
-                    className="border-gray-300 text-gray-900 hover:bg-gray-50 hover:text-gray-900"
+                    className="border-gray-300 text-gray-900 hover:bg-gray-50 hover:text-gray-900 text-sm px-4 py-2"
                   >
                     Cancel
                   </Button>
@@ -1371,11 +1363,11 @@ function TextVibeContent() {
                   <Button
                     onClick={handleSelectNeither}
                     disabled={isSubmitting || !userCorrectAnswer.trim()}
-                    className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                    className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-sm px-4 py-2"
                   >
                     {isSubmitting ? (
                       <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         <span>Submitting...</span>
                       </div>
                     ) : (
@@ -1402,10 +1394,10 @@ function TextVibeContent() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-200"
+              className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200"
             >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">
                   Why was {responses.find(r => r.modelId === selectedResponse)?.modelLabel} better?
                 </h3>
                 <Button
@@ -1424,9 +1416,9 @@ function TextVibeContent() {
                 </Button>
               </div>
 
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <label className="text-sm font-medium text-gray-700">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-gray-700">
                     Quick feedback tags
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -1434,7 +1426,7 @@ function TextVibeContent() {
                       <button
                         key={pill.label}
                         onClick={() => handleFeedbackPillClick(pill)}
-                        className={`px-3 py-2 rounded-full text-sm transition-all duration-200 border flex items-center space-x-2 ${
+                        className={`px-2.5 py-1.5 rounded-full text-xs transition-all duration-200 border flex items-center space-x-1.5 ${
                           selectedFeedbackPills.includes(pill.label)
                             ? 'bg-orange-500 text-white border-orange-500'
                             : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100 hover:border-orange-500/50'
@@ -1447,8 +1439,8 @@ function TextVibeContent() {
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <label className="text-sm font-medium text-gray-700">
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-gray-700">
                     Additional feedback (optional)
                   </label>
                   <Textarea
@@ -1460,7 +1452,7 @@ function TextVibeContent() {
                         setSelectedFeedbackPills([])
                       }
                     }}
-                    className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 resize-none min-h-[100px]"
+                    className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 resize-none min-h-[80px] text-sm"
                   />
                 </div>
 
@@ -1470,11 +1462,11 @@ function TextVibeContent() {
                     setShowFeedbackDetails(false)
                   }}
                   disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 py-3"
+                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 py-2.5 text-sm"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       <span>Submitting...</span>
                     </div>
                   ) : (
