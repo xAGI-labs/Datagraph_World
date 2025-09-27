@@ -1,146 +1,111 @@
-import { NextRequest } from "next/server";
-import { prisma } from "../../../../lib/prisma";
-import { validateUserAuth } from "@/lib/nextauth-helpers";
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 /**
- * POST: { user }
- *  - returns { profile, hasOnboarded }
+ * POST: { userId }
+ *  - returns user profile
  *
- * PUT: { user, ...profileFields, hasOnboarded: true }
- *  - updates/creates user and sets hasOnboarded true when onboarding completed
+ * PUT: { userId, ...profileFields, hasOnboarded: true }
+ *  - updates user profile and sets hasOnboarded true when onboarding completed
  */
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json().catch(() => ({}));
+    const { userId } = await req.json();
 
-    const { user: existingUser, error, status } = await validateUserAuth(body);
-    if (error) {
-      return new Response(JSON.stringify({ error }), {
-        status,
-        headers: { "Content-Type": "application/json" },
-      });
+    if (!userId) {
+      return NextResponse.json({ error: "User ID required" }, { status: 400 });
     }
 
-    // return complete profile to client
-    const profile = {
-      id: existingUser.id,
-      name: existingUser.name || "User",
-      email: existingUser.email || "",
-      image: existingUser.image,
-      createdAt: existingUser.createdAt.toISOString(),
-      vibePoints: existingUser.vibePoints || 0,
-      promptsSubmitted: existingUser.promptsSubmitted || 0,
-      comparisonsCompleted: existingUser.comparisonsCompleted || 0,
-      dayStreak: existingUser.dayStreak || 0,
-      voiceConversations: 0, // TODO: implement if needed
-      voiceMessageCount: 0, // TODO: implement if needed
-      totalVoiceTime: 0, // TODO: implement if needed
-      favoriteVoiceRoom: null, // TODO: implement if needed
-      gender: existingUser.gender,
-      age: existingUser.age,
-      educationLevel: existingUser.educationLevel,
-      country: existingUser.country,
-      city: existingUser.city,
-      occupation: existingUser.occupation,
-      languages: existingUser.languages || [],
-      skills: existingUser.skills || [],
-      experienceLevel: existingUser.experienceLevel,
-      projectPreferences: existingUser.projectPreferences || [],
-      walletAddress: existingUser.walletAddress,
-    };
-
-    return new Response(
-      JSON.stringify({
-        profile,
-        hasOnboarded: Boolean(existingUser.hasOnboarded),
-      }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
-  } catch (err) {
-    console.error("Profile POST error:", err);
-    return new Response(JSON.stringify({ error: "Internal error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        hasOnboarded: true,
+        age: true,
+        educationLevel: true,
+        country: true,
+        city: true,
+        occupation: true,
+        gender: true,
+        languages: true,
+        skills: true,
+        experienceLevel: true,
+        interests: true,
+        projectPreferences: true,
+        worldIdVerified: true,
+        verificationLevel: true,
+        promptsSubmitted: true,
+        comparisonsCompleted: true,
+        dayStreak: true,
+        createdAt: true,
+      },
     });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
 export async function PUT(req: NextRequest) {
   try {
-    const body = await req.json().catch(() => ({}));
+    const { userId, ...updateData } = await req.json();
 
-    const { user: existingUser, error, status } = await validateUserAuth(body);
-    if (error) {
-      return new Response(JSON.stringify({ error }), {
-        status,
-        headers: { "Content-Type": "application/json" },
-      });
+    if (!userId) {
+      return NextResponse.json({ error: "User ID required" }, { status: 400 });
     }
 
-    const allowed: Partial<Record<string, any>> = {};
-    const fields = [
+    // Filter allowed fields
+    const allowedFields = [
       "name",
+      "email",
+      "image",
+      "age",
+      "educationLevel",
       "country",
       "city",
       "occupation",
+      "gender",
       "languages",
       "skills",
       "experienceLevel",
       "interests",
       "projectPreferences",
+      "hasOnboarded",
     ];
-    for (const f of fields) {
-      if (body[f] !== undefined) allowed[f] = body[f];
+
+    const filteredData: any = {};
+    for (const field of allowedFields) {
+      if (updateData[field] !== undefined) {
+        filteredData[field] = updateData[field];
+      }
     }
 
-    if (body.hasOnboarded === true) {
-      allowed.hasOnboarded = true;
-    }
+    filteredData.updatedAt = new Date();
 
-    const updateData: any = { updatedAt: new Date(), ...allowed };
-    const updated = await prisma.user.update({
-      where: { id: existingUser.id },
-      data: updateData,
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: filteredData,
     });
-    const completeProfile = {
-      id: updated.id,
-      name: updated.name || "User",
-      email: updated.email || "",
-      image: updated.image,
-      createdAt: updated.createdAt.toISOString(),
-      vibePoints: updated.vibePoints || 0,
-      promptsSubmitted: updated.promptsSubmitted || 0,
-      comparisonsCompleted: updated.comparisonsCompleted || 0,
-      dayStreak: updated.dayStreak || 0,
-      voiceConversations: 0,
-      voiceMessageCount: 0,
-      totalVoiceTime: 0,
-      favoriteVoiceRoom: null,
-      gender: updated.gender,
-      age: updated.age,
-      educationLevel: updated.educationLevel,
-      country: updated.country,
-      city: updated.city,
-      occupation: updated.occupation,
-      languages: updated.languages || [],
-      skills: updated.skills || [],
-      experienceLevel: updated.experienceLevel,
-      projectPreferences: updated.projectPreferences || [],
-      walletAddress: updated.walletAddress,
-    };
-    return new Response(
-      JSON.stringify({
-        profile: completeProfile,
-        hasOnboarded: Boolean(updated.hasOnboarded),
-      }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+
+    return NextResponse.json({ success: true, user });
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
     );
-  } catch (err) {
-    console.error("Profile PUT error:", err);
-    return new Response(JSON.stringify({ error: "Internal error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
   }
 }
