@@ -1162,36 +1162,38 @@ function TextVibeContent() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 100, opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="fixed bottom-20 sm:bottom-16 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"
+                className="fixed bottom-20 sm:bottom-16 left-0 right-0 z-50 px-4 sm:px-6 flex justify-center"
               >
-                <div className="bg-white/70 backdrop-blur-xl rounded-xl p-1.5 shadow-2xl border border-gray-200/50 grid grid-cols-[1fr,auto,1fr] items-center gap-1.5">
+                <div className="bg-white/70 backdrop-blur-xl rounded-xl p-1.5 shadow-2xl border border-gray-200/50 grid grid-cols-[1fr,auto,1fr] items-center gap-1.5 w-full max-w-sm sm:max-w-md">
                   <Button
                     onClick={() => handleFloatingBarSelection('left')}
-                    className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2.5 rounded-lg w-full flex items-center justify-center text-sm font-semibold transition-all duration-300"
+                    className="bg-gray-800 hover:bg-gray-700 text-white px-2 sm:px-4 py-2 sm:py-2.5 rounded-lg w-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300"
                   >
-                    <ChevronLeft className="w-4 h-4 mr-1.5" />
-                    <span>Model A</span>
+                    <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-1.5" />
+                    <span className="hidden sm:inline">Model A</span>
+                    <span className="sm:hidden">A</span>
                   </Button>
-                  <div className="flex gap-1.5">
+                  <div className="flex gap-1 sm:gap-1.5">
                     <Button
                       onClick={() => handleFloatingBarSelection('tie')}
-                      className="bg-gray-200/50 hover:bg-gray-200 text-gray-700 p-2.5 rounded-lg flex items-center justify-center text-xs border border-gray-300/50 transition-all duration-300"
+                      className="bg-gray-200/50 hover:bg-gray-200 text-gray-700 p-2 sm:p-2.5 rounded-lg flex items-center justify-center text-xs border border-gray-300/50 transition-all duration-300"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" className="sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     </Button>
                     <Button
                       onClick={() => handleFloatingBarSelection('both-bad')}
-                      className="bg-gray-200/50 hover:bg-gray-200 text-gray-700 p-2.5 rounded-lg flex items-center justify-center text-xs border border-gray-300/50 transition-all duration-300"
+                      className="bg-gray-200/50 hover:bg-gray-200 text-gray-700 p-2 sm:p-2.5 rounded-lg flex items-center justify-center text-xs border border-gray-300/50 transition-all duration-300"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-3 h-3 sm:w-4 sm:h-4" />
                     </Button>
                   </div>
                   <Button
                     onClick={() => handleFloatingBarSelection('right')}
-                    className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2.5 rounded-lg w-full flex items-center justify-center text-sm font-semibold transition-all duration-300"
+                    className="bg-gray-800 hover:bg-gray-700 text-white px-2 sm:px-4 py-2 sm:py-2.5 rounded-lg w-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300"
                   >
-                    <span>Model B</span>
-                    <ChevronRight className="w-4 h-4 ml-1.5" />
+                    <span className="hidden sm:inline">Model B</span>
+                    <span className="sm:hidden">B</span>
+                    <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-1.5" />
                   </Button>
                 </div>
               </motion.div>
@@ -1204,7 +1206,7 @@ function TextVibeContent() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className={`fixed ${showFloatingBar ? 'bottom-36 sm:bottom-32' : 'bottom-4'} left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl px-4`}
+            className={`fixed ${showFloatingBar ? 'bottom-36 sm:bottom-32' : 'bottom-4 sm:bottom-6'} left-0 right-0 z-50 px-4 sm:px-6`}
           >
             <FollowUpInput onSubmit={handleFollowUpSubmit} isSubmitting={isGenerating} />
           </motion.div>
