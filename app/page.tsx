@@ -13,7 +13,8 @@ import ModelPerformance from "@/components/ModelPerformance";
 interface RecentPrompt {
   id: string;
   text: string;
-  createdAt: string;
+  createdAt?: string;
+  points?: number;
 }
 
 export default function App() {
@@ -81,10 +82,10 @@ export default function App() {
       const response = await fetch('/api/prompts/recent?limit=15');
       if (response.ok) {
         const data = await response.json();
-        const fallbackPromptData = fallbackQuestions.map((text, i) => ({
+        const fallbackPromptData: RecentPrompt[] = fallbackQuestions.map((text, i) => ({
           id: `fallback-${i}`,
           text,
-          createdAt: new Date(Date.now() - (i * 3600000) - 86400000).toISOString() // Offset by a day
+          points: Math.floor(Math.random() * 451) + 50,
         }));
         
         // Mix real prompts with fallback questions
@@ -103,7 +104,7 @@ export default function App() {
         setRecentPrompts(fallbackQuestions.map((text, i) => ({
           id: `fallback-${i}`,
           text,
-          createdAt: new Date(Date.now() - i * 3600000).toISOString() // Fake timestamps
+          points: Math.floor(Math.random() * 451) + 50,
         })));
       }
     } catch (error) {
@@ -111,7 +112,7 @@ export default function App() {
       setRecentPrompts(fallbackQuestions.map((text, i) => ({
         id: `fallback-${i}`,
         text,
-        createdAt: new Date(Date.now() - i * 3600000).toISOString() // Fake timestamps
+        points: Math.floor(Math.random() * 451) + 50,
       })));
     } finally {
       setIsLoadingPrompts(false);
@@ -383,7 +384,7 @@ export default function App() {
                 </div>
               ) : (
                 <div
-                  className="flex space-x-3 whitespace-nowrap pl-4 overflow-x-auto"
+                  className="flex space-x-3 whitespace-nowrap pl-4 animate-scroll"
                 >
                   {displayPrompts.map((prompt, index) => (
                     <div
@@ -394,8 +395,15 @@ export default function App() {
                       <div className="text-xs sm:text-sm text-gray-700 mt-1 text-left leading-relaxed mb-1.5">
                         {prompt.text}
                       </div>
-                      <div className="text-xs text-gray-400 text-left">
-                        {formatTimeAgo(prompt.createdAt)}
+                      <div className="text-xs text-purple-500 text-left font-medium flex items-center">
+                        {prompt.points ? (
+                          <>
+                            <Brain className="w-3 h-3 mr-1 text-purple-400" />
+                            {prompt.points} Vibe Points
+                          </>
+                        ) : (
+                          prompt.createdAt && formatTimeAgo(prompt.createdAt)
+                        )}
                       </div>
                     </div>
                   ))}
@@ -423,6 +431,17 @@ export default function App() {
         textarea:focus {
           border-color: var(--focus-border-color) !important;
           --tw-ring-color: var(--focus-border-color);
+        }
+        @keyframes scroll {
+          to {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-scroll {
+          animation: scroll 120s linear infinite;
+        }
+        .animate-scroll:hover {
+          animation-play-state: paused;
         }
       `}</style>
     </div>
