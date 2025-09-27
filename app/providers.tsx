@@ -10,7 +10,11 @@ const queryClient = new QueryClient();
 export function Providers(props: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <MiniKitProvider>
+      <MiniKitProvider 
+        props={{
+          appId: process.env.NEXT_PUBLIC_WORLD_APP_ID as `app_${string}`,
+        }}
+      >
         <WorldAuthProvider>
           {props.children}
         </WorldAuthProvider>
