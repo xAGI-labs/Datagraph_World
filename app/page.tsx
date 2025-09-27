@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useWorldAuth } from "@/hooks/use-world-auth";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowRight, MessageSquare, Mic, BarChart3, Brain, Code, LogIn, User, Settings, LogOut } from "lucide-react";
+import { ArrowRight, MessageSquare, Mic, BarChart3, Brain, Code, LogIn, User, Settings, LogOut, CheckCircle } from "lucide-react";
 import Image from "next/image";
 import ModelPerformance from "@/components/ModelPerformance";
 
@@ -18,7 +18,7 @@ interface RecentPrompt {
 
 export default function App() {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { user, logout } = useWorldAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -178,22 +178,22 @@ export default function App() {
       <header className="relative z-10 pt-4 pr-4">
         <div className="flex justify-end items-center space-x-3">
           {/* When not signed in */}
-          {!session && (
+          {!user?.worldIdVerified && (
             <div className="flex space-x-2">
               <Button 
-                onClick={() => signIn('google')}
+                onClick={() => router.push('/onboarding')}
                 variant="outline"
                 size="sm"
                 className="bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 text-gray-700 hover:text-gray-900"
               >
                 <LogIn className="w-4 h-4 mr-2" />
-                Sign In
+                Get Verified
               </Button>
             </div>
           )}
           
           {/* When signed in - Profile and Dashboard */}
-          {session && (
+          {user?.worldIdVerified && (
             <div className="flex items-center space-x-3">
               {/* Dashboard Button */}
               <Button 
@@ -223,21 +223,11 @@ export default function App() {
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
                   className="flex items-center space-x-2 p-2 rounded-full bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 transition-all duration-200"
                 >
-                  {session.user?.image ? (
-                    <Image
-                      src={session.user.image}
-                      alt={session.user.name || 'User'}
-                      width={32}
-                      height={32}
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 text-white" />
-                    </div>
-                  )}
-                  <span className="text-sm font-medium text-gray-700 hidden sm:block">
-                    {session.user?.name?.split(' ')[0] || 'User'}
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="hidden md:block text-sm font-medium text-gray-700">
+                    {user.name?.split(' ')[0] || 'User'}
                   </span>
                 </button>
 
@@ -245,13 +235,12 @@ export default function App() {
                 {showProfileMenu && (
                   <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-lg shadow-lg py-2 z-50">
                     <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
-                      <p className="text-xs text-gray-500">{session.user?.email}</p>
-                      {session.user?.vibePoints !== undefined && (
-                        <p className="text-xs text-purple-600 font-medium mt-1">
-                          {session.user.vibePoints.toLocaleString()} Vibe Points
-                        </p>
-                      )}
+                      <p className="text-sm font-medium text-gray-900">{user.name || 'User'}</p>
+                      <p className="text-xs text-gray-500">{user.email || ''}</p>
+                      <div className="flex items-center text-xs text-green-600 font-medium mt-1">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        World ID Verified
+                      </div>
                     </div>
                     
                     <button
@@ -290,7 +279,7 @@ export default function App() {
                     <div className="border-t border-gray-100 mt-2 pt-2">
                       <button
                         onClick={() => {
-                          signOut();
+                          logout();
                           setShowProfileMenu(false);
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2"

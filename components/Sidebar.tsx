@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { useSession, signOut } from "next-auth/react"
+import { useWorldAuth } from "@/hooks/use-world-auth"
 import { motion, AnimatePresence } from "framer-motion"
-import { WalletConnectWithSync } from './WalletConnectWithSync'
 import { 
   Home, 
   MessageSquare, 
@@ -23,7 +22,6 @@ import {
   Wallet
 } from "lucide-react"
 import Image from "next/image"
-import { useWalletSync } from "@/hooks/use-wallet-sync"
 
 interface SidebarItem {
   id: string
@@ -113,10 +111,7 @@ export default function Sidebar({ className = "", onWidthChange }: SidebarProps)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
-  const { data: session } = useSession()
-  
-  // Use the wallet sync hook to automatically store wallet addresses
-  const { isWalletSynced, walletAddress, isConnected } = useWalletSync()
+  const { user, logout } = useWorldAuth()
 
   const showExpanded = isExpanded || isHovered
 
@@ -138,7 +133,7 @@ export default function Sidebar({ className = "", onWidthChange }: SidebarProps)
   }
 
   // Only show 'New Chat', 'Leaderboard', and 'How it works' if not signed in
-  const filteredSidebarItems = session
+  const filteredSidebarItems = user?.worldIdVerified
     ? sidebarItems
     : sidebarItems.filter(item => ["new-chat", "leaderboard", "how-it-works"].includes(item.id))
 
@@ -205,13 +200,13 @@ export default function Sidebar({ className = "", onWidthChange }: SidebarProps)
           </nav>
           
           {/* Wallet Connect for Mobile - Only show if user is signed in */}
-          {session && (
+          {user?.worldIdVerified && (
             <div className="px-4 border-t border-gray-200 pt-4">
               <div className="mb-4">
-                <WalletConnectWithSync className="w-full" />
-                {isConnected && walletAddress && (
+                {/* World Chain address is automatically connected via World ID */}
+                {user?.worldChainAddress && (
                   <p className="text-sm text-gray-500 mt-2 text-center">
-                    Connected: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                    World Chain: {user.worldChainAddress.slice(0, 6)}...{user.worldChainAddress.slice(-4)}
                   </p>
                 )}
               </div>
@@ -327,9 +322,9 @@ export default function Sidebar({ className = "", onWidthChange }: SidebarProps)
 
           {/* Signout/Sign in Button */}
           <div className="px-2 pb-4 border-t border-gray-200">
-            {session ? (
+            {user?.worldIdVerified ? (
               <motion.button
-                onClick={() => signOut()}
+                onClick={() => logout()}
                 className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 group mt-2 text-gray-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 border border-transparent"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -359,7 +354,7 @@ export default function Sidebar({ className = "", onWidthChange }: SidebarProps)
               </motion.button>
             ) : (
               <motion.button
-                onClick={() => router.push('/auth/signin')}
+                onClick={() => router.push('/onboarding')}
                 className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 group mt-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 border border-transparent"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}

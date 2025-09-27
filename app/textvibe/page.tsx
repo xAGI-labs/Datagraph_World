@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback, Suspense } from "react"
-import { useSession } from "next-auth/react"
+import { useWorldAuth } from "@/hooks/use-world-auth"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -34,7 +34,6 @@ import { motion, AnimatePresence } from "framer-motion"
 import FollowUpInput from "@/components/textvibe/FollowUpInput";
 import EndSessionModal from "@/components/textvibe/modals/EndSessionModal";
 import Image from "next/image"
-import { useWalletSync } from "@/hooks/use-wallet-sync"
 
 interface AIModel {
   id: string
@@ -74,7 +73,7 @@ export default function TextVibePage() {
 }
 
 function TextVibeContent() {
-  const { data: session } = useSession()
+  const { user } = useWorldAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [currentScreen, setCurrentScreen] = useState<'input' | 'processing' | 'comparison' | 'reward'>('input')
@@ -279,8 +278,8 @@ function TextVibeContent() {
   }
 
   const handleFloatingBarSelection = (selection: 'left' | 'right' | 'tie' | 'both-bad') => {
-    if (!session) {
-      router.push('/auth/signin')
+    if (!user?.worldIdVerified) {
+      router.push('/onboarding')
       setShowFloatingBar(false)
       return
     }
@@ -310,7 +309,7 @@ function TextVibeContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user: session?.user,
+          userId: user?.id,
           prompt: prompt,
           modelA: responses[0].modelId,
           modelB: responses[1].modelId,
@@ -351,7 +350,7 @@ function TextVibeContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user: session?.user,
+          userId: user?.id,
           prompt: prompt,
           modelA: responses[0].modelId,
           modelB: responses[1].modelId,
@@ -418,7 +417,7 @@ function TextVibeContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user: session?.user,
+          userId: user?.id,
           prompt: prompt,
           modelA: responses[0].modelId,
           modelB: responses[1].modelId,

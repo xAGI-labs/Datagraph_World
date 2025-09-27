@@ -5,10 +5,13 @@ import { MiniKit, VerificationLevel } from '@worldcoin/minikit-js'
 
 interface User {
   id: string
+  worldIdNullifier: string
   worldIdVerified: boolean
   verificationLevel?: string
+  worldChainAddress?: string
   name?: string
   email?: string
+  image?: string
 }
 
 interface WorldAuthContextType {

@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { UserCircle, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useSession, signOut, signIn } from "next-auth/react";
+import { useWorldAuth } from "@/hooks/use-world-auth";
 
 export default function Navbar() {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { user, logout } = useWorldAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -25,7 +25,7 @@ export default function Navbar() {
     return source[0].toUpperCase();
   };
 
-  const initials = getInitials(session?.user);
+  const initials = getInitials(user);
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-40">
@@ -60,16 +60,16 @@ export default function Navbar() {
 
           {/* Auth Section */}
           <div className="hidden md:flex items-center space-x-4">
-            {session ? (
+            {user ? (
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded-full px-3 py-2 transition-colors"
                 >
-                  {session.user?.image ? (
+                  {user?.image ? (
                     <Image
-                      src={session.user.image}
-                      alt={session.user.name || "User"}
+                      src={user.image}
+                      alt={user.name || "User"}
                       width={24}
                       height={24}
                       className="rounded-full"
@@ -79,7 +79,7 @@ export default function Navbar() {
                       {initials}
                     </div>
                   )}
-                  <span className="text-sm text-gray-700">{session.user?.name || session.user?.email}</span>
+                  <span className="text-sm text-gray-700">{user?.name || user?.email}</span>
                 </button>
 
                 {dropdownOpen && (
@@ -88,7 +88,7 @@ export default function Navbar() {
                       <button
                         onClick={async () => {
                           setDropdownOpen(false);
-                          await signOut();
+                          logout();
                           router.push("/");
                         }}
                         className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
@@ -101,7 +101,7 @@ export default function Navbar() {
               </div>
             ) : (
               <button
-                onClick={() => signIn()}
+                onClick={() => router.push('/onboarding')}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
               >
                 Sign In
@@ -147,11 +147,11 @@ export default function Navbar() {
               Vibe Points
             </Link>
             
-            {session ? (
+            {user ? (
               <button
-                onClick={async () => {
+                onClick={() => {
                   setMobileMenuOpen(false);
-                  await signOut();
+                  logout();
                   router.push("/");
                 }}
                 className="block w-full text-left px-3 py-2 text-red-600 hover:bg-red-50"
@@ -162,7 +162,7 @@ export default function Navbar() {
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  signIn();
+                  router.push('/onboarding');
                 }}
                 className="block w-full text-left px-3 py-2 text-blue-600 hover:bg-blue-50"
               >

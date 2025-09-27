@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { validateUserAuth } from "@/lib/nextauth-helpers";
+import { validateWorldIdAuth } from "@/lib/world-auth-helpers";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       isTie = false,
     } = body;
 
-    const { user: dbUser, error, status } = await validateUserAuth(body);
+    const { user: dbUser, error, status } = await validateWorldIdAuth(body);
     if (error) {
       return NextResponse.json({ error }, { status });
     }
@@ -72,14 +72,14 @@ export async function POST(request: NextRequest) {
         responseTimeB: responseTimeB || null,
         selectedNeither: selectedNeither,
         userCorrectAnswer: selectedNeither ? userCorrectAnswer?.trim() : null,
-        pointsEarned: pointsEarned,
+        // Note: World Chain payment will be handled separately via payment APIs
+        isPaid: false,
       },
     });
 
     await prisma.user.update({
       where: { id: dbUser.id },
       data: {
-        vibePoints: { increment: pointsEarned },
         promptsSubmitted: { increment: 1 },
         comparisonsCompleted: { increment: 1 },
         lastActiveDate: new Date(),
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
         id: comparison.id,
         selectedNeither: comparison.selectedNeither,
         userCorrectAnswer: comparison.userCorrectAnswer,
-        pointsEarned: comparison.pointsEarned,
+        requiresPayment: true, // Indicates that World Chain payment should be initiated
       },
     });
   } catch (error) {

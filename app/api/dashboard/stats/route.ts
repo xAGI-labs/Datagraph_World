@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { validateUserAuth } from "@/lib/nextauth-helpers";
+import { validateWorldIdAuth } from "@/lib/world-auth-helpers";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const { user: dbUser, error, status } = await validateUserAuth(body);
+    const { user: dbUser, error, status } = await validateWorldIdAuth(body);
     if (error) {
       return NextResponse.json({ error }, { status });
     }
@@ -15,9 +15,9 @@ export async function POST(request: NextRequest) {
 
     const totalComparisons = await prisma.comparison.count();
 
-    const totalVoiceSessions = await prisma.voiceSession.count();
-
     const totalPrompts = await prisma.prompt.count();
+
+    const totalWorldChainPayments = await prisma.worldChainPayment.count();
 
     const recentActivity = await prisma.comparison.findMany({
       where: {
@@ -65,14 +65,15 @@ export async function POST(request: NextRequest) {
       user: activity.user?.name,
     }));
 
-    const recentVoiceActivity = await prisma.voiceSession.findMany({
+    // Get recent World Chain payments
+    const recentPayments = await prisma.worldChainPayment.findMany({
       where: {
-        startTime: {
+        createdAt: {
           gte: new Date(Date.now() - 24 * 60 * 60 * 1000),
         },
       },
       orderBy: {
-        startTime: "desc",
+        createdAt: "desc",
       },
       take: 5,
       include: {
@@ -84,15 +85,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const formattedVoiceActivity = recentVoiceActivity.map((session) => ({
-      id: session.id,
-      type: "voice" as const,
-      description: `${session.user?.name || "User"} joined a voice session`,
-      timestamp: session.startTime,
-      user: session.user?.name,
+    const formattedPaymentActivity = recentPayments.map((payment) => ({
+      id: payment.id,
+      type: "payment" as const,
+      description: `${payment.user?.name || "User"} received ${
+        payment.amount
+      } ${payment.token}`,
+      timestamp: payment.createdAt,
+      user: payment.user?.name,
     }));
 
-    const allActivity = [...formattedActivity, ...formattedVoiceActivity]
+    const allActivity = [...formattedActivity, ...formattedPaymentActivity]
       .sort(
         (a, b) =>
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
@@ -155,8 +158,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       totalUsers,
       totalComparisons,
-      totalVoiceSessions,
       totalPrompts,
+      totalWorldChainPayments,
       recentActivity: allActivity,
       topModels: formattedTopModels,
       platformStats,

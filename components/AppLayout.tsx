@@ -3,14 +3,14 @@
 import { useState, useCallback } from "react"
 import { usePathname } from "next/navigation"
 import Sidebar from "./Sidebar"
-import { useSession } from "next-auth/react"
+import { useWorldAuth } from "@/hooks/use-world-auth"
 
 interface AppLayoutProps {
   children: React.ReactNode
 }
 
 export default function AppLayout({ children }: AppLayoutProps) {
-  const { data: session } = useSession()
+  const { user } = useWorldAuth()
   const pathname = usePathname()
   const [sidebarWidth, setSidebarWidth] = useState(64)
 
