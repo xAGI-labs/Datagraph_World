@@ -3,23 +3,39 @@
 import { useRouter } from "next/navigation"
 import { useWorldAuth } from "@/hooks/use-world-auth"
 import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { 
-  Coins, 
-  Wallet as WalletIcon, 
-  TrendingDown, 
-  ArrowLeft,
-  CheckCircle,
-  AlertCircle,
-  Shield
-} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, Wallet, CheckCircle, Shield } from 'lucide-react';
+
+// Mock payment data
+const mockPayments = [
+  {
+    id: 1,
+    description: "AI Comparison Reward",
+    amount: "+0.1 WLD",
+    date: "2024-07-20",
+    status: "Completed"
+  },
+  {
+    id: 2,
+    description: "AI Comparison Reward",
+    amount: "+0.1 WLD",
+    date: "2024-07-19",
+    status: "Completed"
+  },
+  {
+    id: 3,
+    description: "USDC Conversion",
+    amount: "+2.5 USDC",
+    date: "2024-07-18",
+    status: "Completed"
+  }
+];
 
 export default function PointsPage() {
   const { user, isLoading } = useWorldAuth()
   const router = useRouter()
-  const [payments, setPayments] = useState([])
+  const [payments, setPayments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -34,31 +50,20 @@ export default function PointsPage() {
   }, [user, isLoading, router])
 
   const fetchPayments = async () => {
-    if (!user) return
-    
-    try {
-      // This would fetch World Chain payment history
-      // const response = await fetch('/api/world/payments', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ userId: user.id })
-      // })
-      
-      // For now, just set empty array
-      setPayments([])
-    } catch (error) {
-      console.error('Error fetching payments:', error)
-    } finally {
-      setLoading(false)
-    }
+    setLoading(true);
+    // Mock fetching payments
+    setTimeout(() => {
+      setPayments(mockPayments);
+      setLoading(false);
+    }, 1000);
   }
 
   if (isLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40 text-black flex items-center justify-center">
+      <div className="min-h-screen bg-white text-black flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-black">Loading...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p>Loading...</p>
         </div>
       </div>
     )
@@ -66,11 +71,11 @@ export default function PointsPage() {
 
   if (!user || !user.worldIdVerified) {
     return (
-      <div className="min-h-screen bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40 text-black flex items-center justify-center">
-        <div className="text-center">
-          <Shield className="w-16 h-16 text-blue-500 mx-auto mb-4" />
+      <div className="min-h-screen bg-white text-black flex items-center justify-center">
+        <div className="text-center max-w-sm mx-auto">
+          <Shield className="w-12 h-12 text-blue-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-2">World ID Required</h2>
-          <p className="text-gray-600 mb-4">Please complete World ID verification to access payments.</p>
+          <p className="text-gray-600 mb-6">Please complete World ID verification to access your payments.</p>
           <Button onClick={() => router.push("/onboarding")}>
             Get Verified
           </Button>
@@ -80,85 +85,75 @@ export default function PointsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40 text-black">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center mb-8">
+    <div className="min-h-screen bg-white text-black">
+      <div className="container mx-auto px-4 py-8 max-w-2xl">
+        <div className="flex items-center mb-6">
           <Button 
             variant="ghost" 
             onClick={() => router.back()}
-            className="mr-4"
+            className="mr-2"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            <ArrowLeft className="w-4 h-4" />
           </Button>
-          <h1 className="text-4xl font-bold text-gray-900">World Chain Payments</h1>
+          <h1 className="text-3xl font-bold">Payments</h1>
         </div>
 
-        {/* Payment Info */}
-        <Card className="p-6 bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200/50 shadow-lg mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Payment System</h3>
-              <p className="text-gray-600">Earn WLD and USDC for each AI comparison</p>
+        <Card className="w-full border-gray-200 shadow-sm">
+          <CardHeader>
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm text-gray-500">Total Balance</p>
+                <p className="text-4xl font-bold">0.2 WLD</p>
+                <p className="text-lg text-gray-600">+ 2.5 USDC</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-gray-500">Wallet Address</p>
+                <p className="text-sm font-mono text-gray-800">
+                  {user.worldChainAddress 
+                    ? `${user.worldChainAddress.slice(0, 6)}...${user.worldChainAddress.slice(-4)}` 
+                    : 'Not connected'}
+                </p>
+              </div>
             </div>
-            <Coins className="w-8 h-8 text-indigo-500" />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white/50 rounded-lg p-4">
-              <p className="text-sm text-gray-600">Payment per comparison</p>
-              <p className="text-lg font-semibold text-indigo-600">0.1 WLD or equivalent USDC</p>
-            </div>
-            <div className="bg-white/50 rounded-lg p-4">
-              <p className="text-sm text-gray-600">World Chain Address</p>
-              <p className="text-sm font-mono text-gray-800">
-                {user.worldChainAddress ? 
-                  `${user.worldChainAddress.slice(0, 6)}...${user.worldChainAddress.slice(-4)}` : 
-                  'Not connected'
-                }
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        {/* Payment History */}
-        <Card className="p-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">Payment History</h3>
-          
-          {payments.length === 0 ? (
-            <div className="text-center py-12">
-              <WalletIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-600 mb-2">No payments yet</h3>
-              <p className="text-gray-500 mb-4">
-                Start comparing AI models to earn your first World Chain payment!
-              </p>
-              <Button 
-                onClick={() => router.push("/textvibe")}
-                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
-              >
-                Start Comparing
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {payments.map((payment: any, index) => (
-                <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                      <CheckCircle className="w-5 h-5 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <h3 className="text-lg font-semibold mb-4 mt-6">History</h3>
+            {payments.length === 0 ? (
+              <div className="text-center py-16 border-t border-gray-200">
+                <Wallet className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">No transactions yet</h3>
+                <p className="text-gray-500 mb-6">
+                  Start comparing AI models to earn WLD and USDC.
+                </p>
+                <Button 
+                  onClick={() => router.push("/textvibe")}
+                  className="bg-black text-white hover:bg-gray-800"
+                >
+                  Start Comparing
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4 border-t border-gray-200 pt-4">
+                {payments.map((payment) => (
+                  <div key={payment.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50">
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">{payment.description}</p>
+                        <p className="text-sm text-gray-500">{payment.date}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{payment.description}</p>
-                      <p className="text-sm text-gray-500">{payment.createdAt}</p>
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900">{payment.amount}</p>
+                      <p className="text-xs text-gray-500">{payment.status}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-green-600">+{payment.amount} {payment.token}</p>
-                    <p className="text-xs text-gray-500">{payment.status}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </CardContent>
         </Card>
       </div>
     </div>

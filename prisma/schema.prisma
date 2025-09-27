@@ -30,6 +30,7 @@ model User {
   promptsSubmitted     Int @default(0)
   comparisonsCompleted Int @default(0)
   dayStreak            Int @default(0)
+  vibePoints           Int @default(0)
 
   // Onboarding info
   hasOnboarded   Boolean @default(false)
