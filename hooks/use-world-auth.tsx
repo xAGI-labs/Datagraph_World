@@ -89,11 +89,7 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
       return detected
     }
     
-    const detected = detectWorldApp()
-    if (detected) {
-      MiniKit.install()
-    }
-    setIsWorldApp(detected)
+    setIsWorldApp(detectWorldApp())
 
     // Load user from localStorage
     const savedUser = localStorage.getItem('worldauth_user')
@@ -127,25 +123,45 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
 
       const { finalPayload } = await MiniKit.commandsAsync.verify(verifyPayload)
 
+      console.log('🔐 MiniKit verification response:', finalPayload)
+
       if (finalPayload.status === 'error') {
-        return { success: false, error: 'Verification failed' }
+        console.error('❌ MiniKit verification failed:', finalPayload)
+        return { success: false, error: finalPayload.error_code || 'Verification failed' }
       }
+
+      console.log('✅ MiniKit verification successful, sending to backend...')
 
       // Verify on backend
       const verifyResponse = await fetch('/api/world/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payload: finalPayload, action, signal }),
+        body: JSON.stringify({ 
+          payload: finalPayload as ISuccessResult, // Parses only the fields we need to verify
+          action, 
+          signal 
+        }),
       })
 
+      console.log('🌐 Backend response status:', verifyResponse.status)
+
+      if (!verifyResponse.ok) {
+        const errorText = await verifyResponse.text()
+        console.error('❌ Backend verification failed:', errorText)
+        return { success: false, error: `Backend error: ${verifyResponse.status}` }
+      }
+
       const result = await verifyResponse.json()
+      console.log('🌐 Backend verification result:', result)
 
       if (result.success) {
         const newUser = result.user as User
         setUser(newUser)
         localStorage.setItem('worldauth_user', JSON.stringify(newUser))
+        console.log('✅ Verification complete! User saved:', newUser)
         return { success: true }
       } else {
+        console.error('❌ Backend verification rejected:', result)
         return { success: false, error: result.error || 'Verification failed' }
       }
     } catch (err) {
