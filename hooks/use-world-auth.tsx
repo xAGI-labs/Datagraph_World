@@ -89,7 +89,11 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
       return detected
     }
     
-    setIsWorldApp(detectWorldApp())
+    const detected = detectWorldApp()
+    if (detected) {
+      MiniKit.install()
+    }
+    setIsWorldApp(detected)
 
     // Load user from localStorage
     const savedUser = localStorage.getItem('worldauth_user')
