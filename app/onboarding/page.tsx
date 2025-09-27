@@ -16,14 +16,15 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(true)
   const [verificationError, setVerificationError] = useState<string | null>(null)
 
-  const fetchProfile = async () => {
-    if (!user) return
+  const fetchProfile = async (userData?: any) => {
+    const currentUser = userData || user
+    if (!currentUser) return
     
     try {
       const response = await fetch('/api/user/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id })
+        body: JSON.stringify({ userId: currentUser.id })
       })
       if (response.ok) {
         const data = await response.json()
@@ -150,9 +151,9 @@ export default function OnboardingPage() {
           
           <div className="w-full">
             <WorldIDVerification
-              onSuccess={async () => {
+              onSuccess={async (userData) => {
                 setVerificationError(null)
-                await fetchProfile()
+                await fetchProfile(userData)
               }}
               onError={(error) => {
                 setVerificationError(error)

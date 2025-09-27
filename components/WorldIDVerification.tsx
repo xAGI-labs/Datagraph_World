@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Shield } from 'lucide-react'
 
 interface WorldIDVerificationProps {
-  onSuccess?: () => void
+  onSuccess?: (user?: any) => void
   onError?: (error: string) => void
   buttonText?: string
   action?: string
@@ -31,7 +31,7 @@ export default function WorldIDVerification({
       
       if (verificationResult.success) {
         console.log('✅ Complete verification successful!')
-        onSuccess?.()
+        onSuccess?.(verificationResult.user)
       } else {
         console.error('❌ Backend verification failed:', verificationResult.error)
         onError?.(verificationResult.error || 'Verification failed')

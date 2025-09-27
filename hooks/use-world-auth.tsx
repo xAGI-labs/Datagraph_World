@@ -30,7 +30,7 @@ interface WorldAuthContextType {
   login: (action: string, signal?: string) => Promise<{ success: boolean; error?: string }>
   logout: () => void
   verifyWorldId: (action: string, signal?: string) => Promise<{ success: boolean; error?: string }>
-  verifyWithIDKit: (result: IDKitSuccessResult, action: string, signal?: string) => Promise<{ success: boolean; error?: string }>
+  verifyWithIDKit: (result: IDKitSuccessResult, action: string, signal?: string) => Promise<{ success: boolean; error?: string; user?: User }>
   initiatePayment: (amount: number, token: string, description: string) => Promise<{ success: boolean; error?: string }>
   toggleDevMode: () => void
 }
@@ -178,7 +178,7 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
     result: IDKitSuccessResult,
     action: string,
     signal?: string
-  ): Promise<{ success: boolean; error?: string }> => {
+  ): Promise<{ success: boolean; error?: string; user?: User }> => {
     setIsLoading(true)
 
     try {
@@ -211,7 +211,7 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
         setUser(newUser)
         localStorage.setItem('worldauth_user', JSON.stringify(newUser))
         console.log('✅ IDKit verification complete! User saved:', newUser)
-        return { success: true }
+        return { success: true, user: newUser }
       } else {
         console.error('❌ Backend verification rejected:', verifyResult)
         return { success: false, error: verifyResult.error || 'Verification failed' }
