@@ -600,7 +600,7 @@ function TextVibeContent() {
                     size="icon"
                     className="absolute -left-8 top-1/2 -translate-y-1/2 rounded-full disabled:opacity-30"
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="mr-5 w-5 h-5" />
                   </Button>
                   <div className="overflow-hidden w-full">
                     <AnimatePresence mode="wait">
