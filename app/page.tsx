@@ -374,39 +374,6 @@ export default function App() {
             </div>
           </motion.div>
 
-          {/* Categories */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="-mt-10"
-          >
-            <div className="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto">
-              {categories.map((category, index) => {
-                const isSelected = selectedCategory === category.label;
-                return (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    onClick={() => setSelectedCategory(isSelected ? null : category.label)}
-                    className={`
-                      ${isSelected 
-                        ? `${category.borderColor} ${category.textColor} ${category.shadowColor} bg-white` 
-                        : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50 hover:text-gray-900 shadow-2xl shadow-neutral-400 hover:border-gray-300'
-                      } 
-                      transition-all rounded-full px-2 py-1.5 text-xs font-medium whitespace-nowrap
-                    `}
-                  >
-                    <category.icon className={`w-3.5 h-3.5 mr-1.5 transition-colors ${
-                      isSelected ? category.color : 'text-gray-400'
-                    }`} />
-                    {category.label}
-                  </Button>
-                );
-              })}
-            </div>
-          </motion.div>
-
           {/* Animated Question Carousel */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
