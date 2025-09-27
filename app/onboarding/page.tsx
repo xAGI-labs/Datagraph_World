@@ -4,16 +4,16 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useWorldAuth } from "@/hooks/use-world-auth"
 import OnboardingForm from "@/components/OnboardingForm"
+import WorldIDVerification from "@/components/WorldIDVerification"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, Shield, AlertCircle } from "lucide-react"
 import { WORLD_ID_ACTIONS } from "@/lib/world-actions"
 
 export default function OnboardingPage() {
-  const { user, isWorldApp, verifyWorldId, isLoading, toggleDevMode } = useWorldAuth()
+  const { user, isWorldApp, isLoading, toggleDevMode } = useWorldAuth()
   const router = useRouter()
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [verifying, setVerifying] = useState(false)
   const [verificationError, setVerificationError] = useState<string | null>(null)
 
   const fetchProfile = async () => {
@@ -50,25 +50,7 @@ export default function OnboardingPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, router])
 
-  const handleWorldIdVerification = async () => {
-    setVerifying(true)
-    setVerificationError(null)
-    
-    try {
-      const result = await verifyWorldId(WORLD_ID_ACTIONS.ONBOARDING)
-      
-      if (result.success) {
-        // Verification successful, now fetch profile
-        await fetchProfile()
-      } else {
-        setVerificationError(result.error || 'Verification failed')
-      }
-    } catch (error) {
-      setVerificationError('An unexpected error occurred')
-    } finally {
-      setVerifying(false)
-    }
-  }
+
 
   const handleOnboardingSubmit = async (form: any) => {
     if (!user) return
@@ -166,23 +148,19 @@ export default function OnboardingPage() {
             </div>
           )}
           
-          <Button 
-            onClick={handleWorldIdVerification}
-            disabled={verifying}
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-          >
-            {verifying ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Verifying...
-              </>
-            ) : (
-              <>
-                <Shield className="w-4 h-4 mr-2" />
-                Verify with World ID
-              </>
-            )}
-          </Button>
+          <div className="w-full">
+            <WorldIDVerification
+              onSuccess={async () => {
+                setVerificationError(null)
+                await fetchProfile()
+              }}
+              onError={(error) => {
+                setVerificationError(error)
+              }}
+              buttonText="Verify with World ID"
+              action={WORLD_ID_ACTIONS.ONBOARDING}
+            />
+          </div>
           
           <div className="mt-6 space-y-2 text-sm text-gray-600">
             <div className="flex items-center justify-center">

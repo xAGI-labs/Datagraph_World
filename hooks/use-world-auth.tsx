@@ -10,6 +10,7 @@ import {
   Tokens,
   tokenToDecimals
 } from '@worldcoin/minikit-js'
+import { ISuccessResult as IDKitSuccessResult } from '@worldcoin/idkit'
 
 interface User {
   id: string
@@ -29,6 +30,7 @@ interface WorldAuthContextType {
   login: (action: string, signal?: string) => Promise<{ success: boolean; error?: string }>
   logout: () => void
   verifyWorldId: (action: string, signal?: string) => Promise<{ success: boolean; error?: string }>
+  verifyWithIDKit: (result: IDKitSuccessResult, action: string, signal?: string) => Promise<{ success: boolean; error?: string }>
   initiatePayment: (amount: number, token: string, description: string) => Promise<{ success: boolean; error?: string }>
   toggleDevMode: () => void
 }
@@ -172,6 +174,56 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const verifyWithIDKit = async (
+    result: IDKitSuccessResult,
+    action: string,
+    signal?: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    setIsLoading(true)
+
+    try {
+      console.log('🔐 IDKit verification received:', { result, action, signal })
+
+      // Verify on backend
+      const verifyResponse = await fetch('/api/world/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          payload: result,
+          action, 
+          signal 
+        }),
+      })
+
+      console.log('🌐 Backend response status:', verifyResponse.status)
+
+      if (!verifyResponse.ok) {
+        const errorText = await verifyResponse.text()
+        console.error('❌ Backend verification failed:', errorText)
+        return { success: false, error: `Backend error: ${verifyResponse.status}` }
+      }
+
+      const verifyResult = await verifyResponse.json()
+      console.log('🌐 Backend verification result:', verifyResult)
+
+      if (verifyResult.success) {
+        const newUser = verifyResult.user as User
+        setUser(newUser)
+        localStorage.setItem('worldauth_user', JSON.stringify(newUser))
+        console.log('✅ IDKit verification complete! User saved:', newUser)
+        return { success: true }
+      } else {
+        console.error('❌ Backend verification rejected:', verifyResult)
+        return { success: false, error: verifyResult.error || 'Verification failed' }
+      }
+    } catch (err) {
+      console.error('IDKit verification error:', err)
+      return { success: false, error: 'Verification failed' }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const login = async (action: string, signal?: string) => {
     return await verifyWorldId(action, signal)
   }
@@ -262,6 +314,7 @@ export function WorldAuthProvider({ children }: { children: React.ReactNode }) {
         login,
         logout,
         verifyWorldId,
+        verifyWithIDKit,
         initiatePayment,
         toggleDevMode,
       }}
