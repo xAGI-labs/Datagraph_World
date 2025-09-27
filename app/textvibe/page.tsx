@@ -1128,13 +1128,6 @@ function TextVibeContent() {
                           <span className="text-xs text-gray-500">
                             {item.timestamp.toLocaleTimeString()}
                           </span>
-                          <div className="flex items-center space-x-1">
-                            {item.responses.map((resp, idx) => (
-                              <div key={idx} className="w-4 h-4 bg-gray-300 rounded-full">
-                                {getModelIcon(resp.provider)}
-                              </div>
-                            ))}
-                          </div>
                         </div>
                       </div>
                     ))}
