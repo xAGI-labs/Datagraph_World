@@ -159,9 +159,9 @@ export default function WorldChainPage() {
     <div className="min-h-screen bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-4 px-4">Vibe Points Trading</h1>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 px-4">Trade your earned vibe points for WLD and USDC</p>
+          <div className="text-center mb-4 sm:mb-6 lg:mb-8">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4 px-2 sm:px-4">Vibe Points Trading</h1>
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 px-2 sm:px-4">Trade your earned vibe points for WLD and USDC</p>
           </div>
 
           {/* Mock Data Notification */}
@@ -177,32 +177,30 @@ export default function WorldChainPage() {
           )}
 
           {/* Current Balance Card */}
-          <Card className="p-4 sm:p-6 mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 to-purple-50">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+          <Card className="p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 lg:mb-8 bg-gradient-to-r from-blue-50 to-purple-50">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
               <div className="flex items-center space-x-3 sm:space-x-4">
                 <div className="p-2 sm:p-3 bg-blue-100 rounded-full flex-shrink-0">
-                  <Coins className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
+                  <Coins className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-blue-600" />
                 </div>
-                <div className="min-w-0">
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 break-words">
                     {statsLoading ? (
-                      <span className="inline-flex items-center">
-                        <div className="animate-pulse bg-gray-200 h-8 w-24 rounded"></div>
-                      </span>
+                      <div className="animate-pulse bg-gray-200 h-6 sm:h-7 md:h-8 w-24 sm:w-28 md:w-32 rounded"></div>
                     ) : (
-                      `${userStats?.vibePoints || 0} Vibe Points`
+                      <span className="block">{userStats?.vibePoints || 0} <span className="text-sm sm:text-base md:text-lg">Vibe Points</span></span>
                     )}
                   </h2>
-                  <p className="text-sm sm:text-base text-gray-600">
+                  <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">
                     {usingMockData ? "Demo data - " : ""}Available for trading
                   </p>
                 </div>
               </div>
-              <div className="text-left sm:text-right">
+              <div className="text-left sm:text-right flex-shrink-0">
                 <p className="text-xs sm:text-sm text-gray-500">Estimated value</p>
-                <p className="text-base sm:text-lg font-semibold text-gray-900">
+                <p className="text-sm sm:text-base md:text-lg font-semibold text-gray-900">
                   {statsLoading ? (
-                    <div className="animate-pulse bg-gray-200 h-6 w-20 rounded ml-auto"></div>
+                    <div className="animate-pulse bg-gray-200 h-5 sm:h-6 w-16 sm:w-20 rounded sm:ml-auto"></div>
                   ) : (
                     `≈ ${((userStats?.vibePoints || 0) * conversionRates.WLD).toFixed(3)} WLD`
                   )}
@@ -212,9 +210,9 @@ export default function WorldChainPage() {
           </Card>
 
           {/* Trading Interface */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-4 sm:mb-6 lg:mb-8">
             {/* Trade Form */}
-            <Card className="p-4 sm:p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <div className="flex items-center space-x-3 mb-4 sm:mb-6">
                 <ArrowRightLeft className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                 <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Trade Vibe Points</h3>
@@ -222,7 +220,7 @@ export default function WorldChainPage() {
               
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="points">Vibe Points to Trade</Label>
+                  <Label htmlFor="points" className="text-sm sm:text-base font-medium">Vibe Points to Trade</Label>
                   <Input
                     id="points"
                     type="number"
@@ -231,16 +229,17 @@ export default function WorldChainPage() {
                     onChange={(e) => setPointsToTrade(e.target.value)}
                     min="10"
                     max={userStats?.vibePoints || 0}
+                    className="mt-1 text-sm sm:text-base"
                   />
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1">
                     Minimum 10 points required
                   </p>
                 </div>
 
                 <div>
-                  <Label htmlFor="token">Receive Token</Label>
+                  <Label htmlFor="token" className="text-sm sm:text-base font-medium">Receive Token</Label>
                   <Select value={selectedToken} onValueChange={setSelectedToken}>
-                    <SelectTrigger>
+                    <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select token" />
                     </SelectTrigger>
                     <SelectContent>
@@ -251,10 +250,10 @@ export default function WorldChainPage() {
                 </div>
 
                 {pointsToTrade && (
-                  <div className="p-3 sm:p-4 bg-blue-50 rounded-lg">
+                  <div className="p-2 sm:p-3 md:p-4 bg-blue-50 rounded-lg">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-1 sm:space-y-0">
-                      <span className="text-sm sm:text-base text-gray-700">You will receive:</span>
-                      <span className="text-sm sm:text-base font-semibold text-blue-600">
+                      <span className="text-xs sm:text-sm md:text-base text-gray-700">You will receive:</span>
+                      <span className="text-sm sm:text-base md:text-lg font-semibold text-blue-600 break-all">
                         {(parseInt(pointsToTrade || "0") * conversionRates[selectedToken as keyof typeof conversionRates]).toFixed(4)} {selectedToken}
                       </span>
                     </div>
@@ -264,7 +263,7 @@ export default function WorldChainPage() {
                 <Button 
                   onClick={handleTrade}
                   disabled={!pointsToTrade || parseInt(pointsToTrade) < 10 || parseInt(pointsToTrade) > (userStats?.vibePoints || 0) || trading}
-                  className="w-full"
+                  className="w-full text-sm sm:text-base py-2 sm:py-3"
                 >
                   {trading ? "Processing Trade..." : "Trade Now"}
                 </Button>
@@ -272,8 +271,8 @@ export default function WorldChainPage() {
             </Card>
 
             {/* Conversion Rates & Info */}
-            <Card className="p-4 sm:p-6">
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Conversion Rates</h3>
+            <Card className="p-3 sm:p-4 md:p-6">
+              <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 md:mb-6">Conversion Rates</h3>
               
               <div className="space-y-4">
                 <div className="flex justify-between items-center p-2 sm:p-3 bg-gray-50 rounded-lg">
@@ -310,8 +309,8 @@ export default function WorldChainPage() {
           </div>
 
           {/* Stats Overview */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <Card className="p-4 sm:p-6 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 lg:mb-8">
+            <Card className="p-3 sm:p-4 md:p-6 text-center">
               <div className="p-2 sm:p-3 bg-green-100 rounded-full w-fit mx-auto mb-3 sm:mb-4">
                 <Trophy className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
               </div>
@@ -352,13 +351,13 @@ export default function WorldChainPage() {
           </div>
 
           {/* Earn More Points */}
-          <Card className="p-4 sm:p-6 lg:p-8 text-center">
-            <Coins className="w-12 h-12 sm:w-16 sm:h-16 text-yellow-500 mx-auto mb-3 sm:mb-4" />
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4 px-4">Need More Vibe Points?</h2>
-            <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-4">
+          <Card className="p-4 sm:p-6 md:p-8 text-center">
+            <Coins className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-yellow-500 mx-auto mb-2 sm:mb-3 md:mb-4" />
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4 px-2 sm:px-4">Need More Vibe Points?</h2>
+            <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 md:mb-6 px-2 sm:px-4">
               Earn vibe points by comparing AI model responses. Each comparison earns you points that can be traded for real crypto.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 justify-center items-center max-w-md mx-auto">
               <Button 
                 onClick={() => router.push('/textvibe')}
                 className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
@@ -375,9 +374,9 @@ export default function WorldChainPage() {
             </div>
           </Card>
 
-          <div className="mt-6 sm:mt-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 sm:p-6">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">How Vibe Points Trading Works</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm">
+          <div className="mt-4 sm:mt-6 md:mt-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 sm:p-4 md:p-6">
+            <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 md:mb-4">How Vibe Points Trading Works</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm">
               <div className="flex items-start space-x-3">
                 <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-blue-600 font-semibold">1</span>
