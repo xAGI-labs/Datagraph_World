@@ -89,7 +89,15 @@ export async function POST(request: NextRequest) {
       verificationLevel: userStats.verificationLevel || "device",
       worldChainAddress: userStats.worldChainAddress || undefined,
 
-      // World Chain payment stats
+      // World Chain payment stats - structured for vibe points page
+      paymentStats: {
+        _count: {
+          id: paymentStats._count.id || 0,
+        },
+        _sum: {
+          amount: paymentStats._sum.amount || 0,
+        },
+      },
       totalPayments: paymentStats._count.id || 0,
       totalEarnings: paymentStats._sum.amount || 0,
       paymentsByToken: paymentsByToken.map((payment) => ({
