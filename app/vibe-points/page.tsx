@@ -14,10 +14,11 @@ export default function WorldChainPage() {
   const { user, initiatePayment, isLoading } = useWorldAuth()
   const router = useRouter()
   const [userStats, setUserStats] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const [statsLoading, setStatsLoading] = useState(true)
   const [trading, setTrading] = useState(false)
   const [pointsToTrade, setPointsToTrade] = useState("")
   const [selectedToken, setSelectedToken] = useState("WLD")
+  const [usingMockData, setUsingMockData] = useState(false)
   
   // Conversion rates (100 vibe points = 0.1 tokens)
   const conversionRates = {
@@ -25,8 +26,28 @@ export default function WorldChainPage() {
     USDC: 0.001 // 1 vibe point = 0.001 USDC
   }
 
+  // Mock data for when API is slow
+  const getMockStats = () => ({
+    vibePoints: 250,
+    totalComparisons: 8,
+    totalPayments: 2,
+    paymentStats: {
+      _count: { id: 2 }
+    }
+  })
+
   const fetchUserStats = useCallback(async () => {
     if (!user?.worldIdNullifier) return
+    
+    // Set a timeout to use mock data if API is slow
+    const timeoutId = setTimeout(() => {
+      if (statsLoading) {
+        console.log('API timeout, using mock data')
+        setUserStats(getMockStats())
+        setUsingMockData(true)
+        setStatsLoading(false)
+      }
+    }, 3000) // 3 second timeout
     
     try {
       const response = await fetch('/api/user/stats', {
@@ -37,14 +58,24 @@ export default function WorldChainPage() {
       
       if (response.ok) {
         const stats = await response.json()
+        clearTimeout(timeoutId)
         setUserStats(stats)
+        setUsingMockData(false)
+      } else {
+        // If API fails, use mock data
+        clearTimeout(timeoutId)
+        setUserStats(getMockStats())
+        setUsingMockData(true)
       }
     } catch (error) {
       console.error('Failed to fetch user stats:', error)
+      clearTimeout(timeoutId)
+      setUserStats(getMockStats())
+      setUsingMockData(true)
     } finally {
-      setLoading(false)
+      setStatsLoading(false)
     }
-  }, [user?.worldIdNullifier])
+  }, [user?.worldIdNullifier, statsLoading])
 
   useEffect(() => {
     if (!isLoading && !user?.worldIdVerified) {
@@ -122,16 +153,7 @@ export default function WorldChainPage() {
     )
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40 flex items-center justify-center px-4">
-        <div className="text-center max-w-md mx-auto">
-          <div className="animate-spin w-6 h-6 sm:w-8 sm:h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-3 sm:mb-4"></div>
-          <p className="text-sm sm:text-base text-gray-600">Loading your vibe points...</p>
-        </div>
-      </div>
-    )
-  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40">
@@ -142,6 +164,18 @@ export default function WorldChainPage() {
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 px-4">Trade your earned vibe points for WLD and USDC</p>
           </div>
 
+          {/* Mock Data Notification */}
+          {usingMockData && (
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-amber-50 border border-amber-200 rounded-lg">
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 bg-amber-500 rounded-full flex-shrink-0"></div>
+                <p className="text-sm sm:text-base text-amber-800">
+                  <span className="font-semibold">Demo Mode:</span> Using sample data due to slow API response. Your actual stats may differ.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Current Balance Card */}
           <Card className="p-4 sm:p-6 mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 to-purple-50">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
@@ -151,15 +185,27 @@ export default function WorldChainPage() {
                 </div>
                 <div className="min-w-0">
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                    {userStats?.vibePoints || 0} Vibe Points
+                    {statsLoading ? (
+                      <span className="inline-flex items-center">
+                        <div className="animate-pulse bg-gray-200 h-8 w-24 rounded"></div>
+                      </span>
+                    ) : (
+                      `${userStats?.vibePoints || 0} Vibe Points`
+                    )}
                   </h2>
-                  <p className="text-sm sm:text-base text-gray-600">Available for trading</p>
+                  <p className="text-sm sm:text-base text-gray-600">
+                    {usingMockData ? "Demo data - " : ""}Available for trading
+                  </p>
                 </div>
               </div>
               <div className="text-left sm:text-right">
                 <p className="text-xs sm:text-sm text-gray-500">Estimated value</p>
                 <p className="text-base sm:text-lg font-semibold text-gray-900">
-                  ≈ {((userStats?.vibePoints || 0) * conversionRates.WLD).toFixed(3)} WLD
+                  {statsLoading ? (
+                    <div className="animate-pulse bg-gray-200 h-6 w-20 rounded ml-auto"></div>
+                  ) : (
+                    `≈ ${((userStats?.vibePoints || 0) * conversionRates.WLD).toFixed(3)} WLD`
+                  )}
                 </p>
               </div>
             </div>
@@ -270,7 +316,11 @@ export default function WorldChainPage() {
                 <Trophy className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
               </div>
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 sm:mb-2">Comparisons</h3>
-              <p className="text-xl sm:text-2xl font-bold text-green-600">{userStats?.comparisonsCompleted || 0}</p>
+              {statsLoading ? (
+                <div className="animate-pulse bg-gray-200 h-8 w-12 rounded mx-auto mb-2"></div>
+              ) : (
+                <p className="text-xl sm:text-2xl font-bold text-green-600">{userStats?.totalComparisons || 0}</p>
+              )}
               <p className="text-gray-600 text-xs sm:text-sm">Total completed</p>
             </Card>
 
@@ -279,7 +329,11 @@ export default function WorldChainPage() {
                 <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
               </div>
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 sm:mb-2">Day Streak</h3>
-              <p className="text-xl sm:text-2xl font-bold text-blue-600">{userStats?.dayStreak || 0}</p>
+              {statsLoading ? (
+                <div className="animate-pulse bg-gray-200 h-8 w-8 rounded mx-auto mb-2"></div>
+              ) : (
+                <p className="text-xl sm:text-2xl font-bold text-blue-600">{userStats?.dayStreak || 0}</p>
+              )}
               <p className="text-gray-600 text-xs sm:text-sm">Consecutive days</p>
             </Card>
 
@@ -288,7 +342,11 @@ export default function WorldChainPage() {
                 <Wallet className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" />
               </div>
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 sm:mb-2">Payments</h3>
-              <p className="text-xl sm:text-2xl font-bold text-purple-600">{userStats?.paymentStats?._count?.id || 0}</p>
+              {statsLoading ? (
+                <div className="animate-pulse bg-gray-200 h-8 w-8 rounded mx-auto mb-2"></div>
+              ) : (
+                <p className="text-xl sm:text-2xl font-bold text-purple-600">{userStats?.totalPayments || 0}</p>
+              )}
               <p className="text-gray-600 text-xs sm:text-sm">Completed trades</p>
             </Card>
           </div>
