@@ -6,7 +6,7 @@ import { useWorldAuth } from "@/hooks/use-world-auth";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowRight, MessageSquare, Mic, BarChart3, Brain, Code, LogIn, User, Settings, LogOut, CheckCircle } from "lucide-react";
+import { ArrowRight, MessageSquare, Mic, BarChart3, Brain, Code, LogIn, User, Settings, LogOut, CheckCircle, Menu } from "lucide-react";
 import Image from "next/image";
 import ModelPerformance from "@/components/ModelPerformance";
 
@@ -190,29 +190,17 @@ export default function App() {
             </Button>
           )}
           
-          {/* When signed in - Profile and Dashboard */}
+          {/* When signed in - Hamburger Menu and Profile */}
           {user?.worldIdVerified && (
             <div className="flex items-center space-x-2">
-              {/* Dashboard Button */}
+              {/* Hamburger Menu Button */}
               <Button 
-                onClick={() => router.push('/dashboard')}
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
                 variant="outline"
                 size="sm"
-                className="bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 text-gray-700 hover:text-gray-900 text-xs px-3 py-1 h-auto"
+                className="bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 text-gray-700 hover:text-gray-900 text-xs px-2 py-1 h-auto"
               >
-                <BarChart3 className="w-3 h-3 mr-1.5" />
-                Dashboard
-              </Button>
-
-              {/* Points/Trading Button */}
-              <Button 
-                onClick={() => router.push('/vibe-points')}
-                variant="outline"
-                size="sm"
-                className="bg-purple-500/10 backdrop-blur-md border border-purple-200/50 hover:bg-purple-500/20 text-purple-700 hover:text-purple-900 text-xs px-3 py-1 h-auto"
-              >
-                <Brain className="w-3 h-3 mr-1.5" />
-                Trade VP
+                <Menu className="w-4 h-4" />
               </Button>
 
               {/* User Profile Menu */}
@@ -262,13 +250,13 @@ export default function App() {
                     
                     <button
                       onClick={() => {
-                        router.push('/vibe-points');
+                        router.push('/textvibe');
                         setShowProfileMenu(false);
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
                     >
                       <MessageSquare className="w-4 h-4" />
-                      <span>Vibe Points</span>
+                      <span>Chat</span>
                     </button>
                     
                     <div className="border-t border-gray-100 mt-2 pt-2">
