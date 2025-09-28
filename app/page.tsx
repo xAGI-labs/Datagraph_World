@@ -26,6 +26,7 @@ export default function App() {
   const [recentPrompts, setRecentPrompts] = useState<RecentPrompt[]>([]);
   const [isLoadingPrompts, setIsLoadingPrompts] = useState(true);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   
   const words = ["design", "art", "voice", "text", "games", "code", "stories", "music"];
 
@@ -35,11 +36,15 @@ export default function App() {
       if (showProfileMenu && !target.closest('.profile-menu-container')) {
         setShowProfileMenu(false);
       }
+      if (showHamburgerMenu && !target.closest('.hamburger-menu-container')) {
+        setShowHamburgerMenu(false);
+      }
     };
 
     const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && showProfileMenu) {
+      if (event.key === 'Escape' && (showProfileMenu || showHamburgerMenu)) {
         setShowProfileMenu(false);
+        setShowHamburgerMenu(false);
       }
     };
 
@@ -50,7 +55,7 @@ export default function App() {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscapeKey);
     };
-  }, [showProfileMenu]);
+  }, [showProfileMenu, showHamburgerMenu]);
 
   const fallbackQuestions = [
     "What's the best way to learn a new language?",
@@ -190,33 +195,23 @@ export default function App() {
             </Button>
           )}
           
-          {/* When signed in - Hamburger Menu and Profile */}
+          {/* When signed in - Hamburger Menu */}
           {user?.worldIdVerified && (
             <div className="flex items-center space-x-2">
               {/* Hamburger Menu Button */}
-              <Button 
-                onClick={() => setShowProfileMenu(!showProfileMenu)}
-                variant="outline"
-                size="sm"
-                className="bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 text-gray-700 hover:text-gray-900 text-xs px-2 py-1 h-auto"
-              >
-                <Menu className="w-4 h-4" />
-              </Button>
-
-              {/* User Profile Menu */}
-              <div className="relative profile-menu-container">
-                <button
-                  onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className="flex items-center space-x-2 p-1.5 rounded-full bg-white/80 backdrop-blur-md border border-gray-200/50 hover:bg-white/90 transition-all duration-200"
+              <div className="relative hamburger-menu-container">
+                <Button 
+                  onClick={() => setShowHamburgerMenu(!showHamburgerMenu)}
+                  variant="outline"
+                  size="sm"
+                  className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 hover:text-gray-900 text-xs px-2 py-1 h-auto shadow-sm"
                 >
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                    <User className="w-4 h-4 text-white" />
-                  </div>
-                </button>
+                  <Menu className="w-4 h-4" />
+                </Button>
 
-                {/* Profile Dropdown */}
-                {showProfileMenu && (
-                  <div className="absolute right-0 mt-2 w-screen sm:w-56 bg-white/95 border border-gray-200/50 rounded-lg shadow-lg py-2 z-50">
+                {/* Hamburger Dropdown */}
+                {showHamburgerMenu && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
                     <div className="px-4 py-2 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900">{user.name || 'User'}</p>
                       <p className="text-xs text-gray-500">{user.email || ''}</p>
@@ -229,7 +224,7 @@ export default function App() {
                     <button
                       onClick={() => {
                         router.push('/dashboard');
-                        setShowProfileMenu(false);
+                        setShowHamburgerMenu(false);
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
                     >
@@ -240,7 +235,7 @@ export default function App() {
                     <button
                       onClick={() => {
                         router.push('/vibe-points');
-                        setShowProfileMenu(false);
+                        setShowHamburgerMenu(false);
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
                     >
@@ -251,7 +246,7 @@ export default function App() {
                     <button
                       onClick={() => {
                         router.push('/textvibe');
-                        setShowProfileMenu(false);
+                        setShowHamburgerMenu(false);
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
                     >
@@ -262,7 +257,7 @@ export default function App() {
                     <div className="border-t border-gray-100 mt-2 pt-2">
                       <button
                         onClick={async () => {
-                          setShowProfileMenu(false);
+                          setShowHamburgerMenu(false);
                           console.log('🚪 Sign out clicked from homepage');
                           await logout();
                         }}
