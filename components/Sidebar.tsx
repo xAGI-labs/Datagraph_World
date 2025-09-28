@@ -44,7 +44,7 @@ const sidebarItems: SidebarItem[] = [
     id: "new-chat",
     label: "New Chat",
     icon: <MessageSquare className="w-5 h-5" />,
-    path: "/textvibe",
+    path: "/",
     enabled: true
   },
   {
