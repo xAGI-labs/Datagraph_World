@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 
 interface DashboardStats {
+  vibePoints: number
   totalComparisons: number
   weeklyComparisons: number
   rank: number
@@ -26,6 +27,7 @@ export default function DashboardPage() {
   const { user, isLoading, isWorldApp } = useWorldAuth()
   const router = useRouter()
   const [stats, setStats] = useState<DashboardStats>({
+    vibePoints: 0,
     totalComparisons: 0,
     weeklyComparisons: 0,
     rank: 0,
@@ -109,7 +111,23 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
+          <Card className="p-6 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200/50 shadow-lg hover:shadow-xl transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-amber-600">Vibe Points</p>
+                <p className="text-2xl font-bold text-amber-700">{stats.vibePoints.toLocaleString()}</p>
+              </div>
+              <Sparkles className="w-8 h-8 text-amber-500" />
+            </div>
+            <Button 
+              onClick={() => router.push("/vibe-points")}
+              className="mt-4 w-full bg-amber-500 hover:bg-amber-600"
+            >
+              Trade Points
+            </Button>
+          </Card>
+
           <Card className="p-6 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200/50 shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
