@@ -53,7 +53,7 @@ export default function Navbar() {
             <Link href="/textvibe" className="text-gray-600 hover:text-gray-900 transition-colors">
               Chat
             </Link>
-            <Link href="/points" className="text-gray-600 hover:text-gray-900 transition-colors">
+            <Link href="/vibe-points" className="text-gray-600 hover:text-gray-900 transition-colors">
               Vibe Points
             </Link>
           </div>
@@ -140,7 +140,7 @@ export default function Navbar() {
               Chat
             </Link>
             <Link
-              href="/points"
+              href="/vibe-points"
               className="block px-3 py-2 text-gray-600 hover:text-gray-900"
               onClick={() => setMobileMenuOpen(false)}
             >

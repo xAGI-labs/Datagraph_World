@@ -206,7 +206,7 @@ export default function App() {
 
               {/* Points/Trading Button */}
               <Button 
-                onClick={() => router.push('/points')}
+                onClick={() => router.push('/vibe-points')}
                 variant="outline"
                 size="sm"
                 className="bg-purple-500/10 backdrop-blur-md border border-purple-200/50 hover:bg-purple-500/20 text-purple-700 hover:text-purple-900 text-xs px-3 py-1 h-auto"
@@ -251,7 +251,7 @@ export default function App() {
                     
                     <button
                       onClick={() => {
-                        router.push('/points');
+                        router.push('/vibe-points');
                         setShowProfileMenu(false);
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"

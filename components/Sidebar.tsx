@@ -51,7 +51,7 @@ const sidebarItems: SidebarItem[] = [
     id: "points",
     label: "Points",
     icon: <Trophy className="w-5 h-5" />,
-    path: "/points",
+    path: "/vibe-points",
     enabled: true
   },
   // {
