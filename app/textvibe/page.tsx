@@ -28,10 +28,12 @@ import {
   Users,
   Smile,
   Frown,
-  History
+  History,
+  Trophy,
+  ChevronUp
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import FollowUpInput from "@/components/textvibe/FollowUpInput";
+;
 import EndSessionModal from "@/components/textvibe/modals/EndSessionModal";
 import Image from "next/image"
 
@@ -105,6 +107,8 @@ function TextVibeContent() {
   const [showEndSessionModal, setShowEndSessionModal] = useState(false)
   const [totalPoints, setTotalPoints] = useState(0)
   const [currentPage, setCurrentPage] = useState(0)
+  const [showToast, setShowToast] = useState(true)
+  const [toastCollapsed, setToastCollapsed] = useState(false)
 
   const questionPills = [
     "What's the best way to learn a new language?",
@@ -327,12 +331,42 @@ function TextVibeContent() {
       })
 
       if (response.ok) {
+        const result = await response.json()
+        console.log('Tie submission result:', result)
+        
         setTotalPoints(prev => prev + 100)
         const lastItem = chatHistory[0]
         if (lastItem) {
           lastItem.feedbackGiven = true
         }
         setShowFloatingBar(false)
+        
+        // Show success toast
+        if (typeof window !== 'undefined') {
+          const toast = document.createElement('div')
+          toast.innerText = '✅ +100 Vibe Points earned! Thanks for marking as tie.'
+          toast.style.position = 'fixed'
+          toast.style.top = '32px'
+          toast.style.left = '50%'
+          toast.style.transform = 'translateX(-50%)'
+          toast.style.background = 'linear-gradient(to right, #10b981, #059669)'
+          toast.style.color = 'white'
+          toast.style.padding = '12px 24px'
+          toast.style.borderRadius = '999px'
+          toast.style.fontWeight = 'bold'
+          toast.style.fontSize = '1rem'
+          toast.style.zIndex = '9999'
+          toast.style.boxShadow = '0 4px 20px rgba(16, 185, 129, 0.3)'
+          document.body.appendChild(toast)
+          setTimeout(() => {
+            toast.style.opacity = '0'
+            setTimeout(() => {
+              if (toast.parentNode) toast.parentNode.removeChild(toast)
+            }, 400)
+          }, 3000)
+        }
+      } else {
+        console.error('Tie submission failed:', response.status)
       }
     } catch (error) {
       console.error('Error saving tie:', error)
@@ -367,6 +401,9 @@ function TextVibeContent() {
       })
 
       if (response.ok) {
+        const result = await response.json()
+        console.log('Feedback submission result:', result)
+        
         setTotalPoints(prev => prev + 100)
         const lastItem = chatHistory[0]
         if (lastItem) {
@@ -377,29 +414,34 @@ function TextVibeContent() {
         setFeedback("")
         setSelectedFeedbackPills([])
         setShowFloatingBar(false)
+        
         if (typeof window !== 'undefined') {
           const toast = document.createElement('div')
-          toast.innerText = 'Feedback submitted! Thank you.'
+          toast.innerText = '✅ +100 Vibe Points earned! Thank you for your feedback.'
           toast.style.position = 'fixed'
           toast.style.top = '32px'
           toast.style.left = '50%'
           toast.style.transform = 'translateX(-50%)'
-          toast.style.background = 'linear-gradient(to right, #f97316, #ef4444)'
+          toast.style.background = 'linear-gradient(to right, #10b981, #059669)'
           toast.style.color = 'white'
           toast.style.padding = '12px 24px'
           toast.style.borderRadius = '999px'
           toast.style.fontWeight = 'bold'
           toast.style.fontSize = '1rem'
           toast.style.zIndex = '9999'
-          toast.style.boxShadow = '0 2px 12px rgba(0,0,0,0.15)'
+          toast.style.boxShadow = '0 4px 20px rgba(16, 185, 129, 0.3)'
           document.body.appendChild(toast)
           setTimeout(() => {
             toast.style.opacity = '0'
             setTimeout(() => {
               if (toast.parentNode) toast.parentNode.removeChild(toast)
             }, 400)
-          }, 2000)
+          }, 3000)
         }
+      } else {
+        console.error('Feedback submission failed:', response.status)
+        const errorData = await response.json()
+        console.error('Error details:', errorData)
       }
     } catch (error) {
       console.error('Error saving comparison:', error)
@@ -434,6 +476,9 @@ function TextVibeContent() {
       })
 
       if (response.ok) {
+        const result = await response.json()
+        console.log('Neither option submission result:', result)
+        
         setTotalPoints(prev => prev + 100)
         const lastItem = chatHistory[0]
         if (lastItem) {
@@ -441,6 +486,32 @@ function TextVibeContent() {
         }
         setShowNeitherOption(false)
         setShowFloatingBar(false)
+        
+        if (typeof window !== 'undefined') {
+          const toast = document.createElement('div')
+          toast.innerText = '✅ +100 Vibe Points earned! Thanks for providing the correct answer.'
+          toast.style.position = 'fixed'
+          toast.style.top = '32px'
+          toast.style.left = '50%'
+          toast.style.transform = 'translateX(-50%)'
+          toast.style.background = 'linear-gradient(to right, #10b981, #059669)'
+          toast.style.color = 'white'
+          toast.style.padding = '12px 24px'
+          toast.style.borderRadius = '999px'
+          toast.style.fontWeight = 'bold'
+          toast.style.fontSize = '1rem'
+          toast.style.zIndex = '9999'
+          toast.style.boxShadow = '0 4px 20px rgba(16, 185, 129, 0.3)'
+          document.body.appendChild(toast)
+          setTimeout(() => {
+            toast.style.opacity = '0'
+            setTimeout(() => {
+              if (toast.parentNode) toast.parentNode.removeChild(toast)
+            }, 400)
+          }, 3000)
+        }
+      } else {
+        console.error('Neither option submission failed:', response.status)
       }
     } catch (error) {
       console.error('Error saving comparison:', error)
@@ -469,11 +540,7 @@ function TextVibeContent() {
     }
   }
 
-  const handleFollowUpSubmit = (followUpPrompt: string) => {
-    setPrompt(followUpPrompt)
-    setShowFloatingBar(true)
-    handleSubmitPrompt(followUpPrompt)
-  }
+
 
   const getModelIcon = (provider: string) => {
     const p = (provider || "").toLowerCase()
@@ -1223,16 +1290,84 @@ function TextVibeContent() {
             )}
           </AnimatePresence>
 
-          {/* FollowUpInput is always visible on comparison screen */}
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className={`fixed ${showFloatingBar ? 'bottom-36 sm:bottom-32' : 'bottom-4 sm:bottom-6'} left-0 right-0 z-50 px-4 sm:px-6`}
-          >
-            <FollowUpInput onSubmit={handleFollowUpSubmit} isSubmitting={isGenerating} />
-          </motion.div>
+          {/* Helper Toast */}
+          <AnimatePresence>
+            {showToast && (
+              <motion.div
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 100, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className={`fixed ${showFloatingBar ? 'bottom-36 sm:bottom-32' : 'bottom-4 sm:bottom-6'} left-4 right-4 sm:left-6 sm:right-6 z-40`}
+              >
+                <div className="max-w-md mx-auto">
+                  <motion.div
+                    animate={{ scale: toastCollapsed ? 0.95 : 1 }}
+                    className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl shadow-lg overflow-hidden"
+                  >
+                    <div className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                            <Trophy className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-sm">Choose the Better Response!</p>
+                            {!toastCollapsed && (
+                              <p className="text-xs text-white/80">Earn 100 vibe points for each annotation</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => setToastCollapsed(!toastCollapsed)}
+                            className="text-white/60 hover:text-white transition-colors"
+                          >
+                            <motion.div
+                              animate={{ rotate: toastCollapsed ? 180 : 0 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <ChevronUp className="w-4 h-4" />
+                            </motion.div>
+                          </button>
+                          <button
+                            onClick={() => setShowToast(false)}
+                            className="text-white/60 hover:text-white transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {!toastCollapsed && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="mt-3 pt-3 border-t border-white/20"
+                        >
+                          <div className="space-y-2 text-xs text-white/90">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-1.5 h-1.5 bg-white/60 rounded-full"></div>
+                              <span>Compare the AI responses above</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <div className="w-1.5 h-1.5 bg-white/60 rounded-full"></div>
+                              <span>Choose which one is better or mark as tie</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <div className="w-1.5 h-1.5 bg-white/60 rounded-full"></div>
+                              <span>Get 100 vibe points for your feedback!</span>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </div>
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Feedback Modal Floating - always rendered when showFeedbackDetails is true */}
           <AnimatePresence>
