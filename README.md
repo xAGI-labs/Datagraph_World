@@ -60,10 +60,6 @@ NEXT_PUBLIC_WORLD_APP_ID=app_...
 # Get this from the Worldcoin Developer Portal
 WORLD_DEV_PORTAL_API_KEY=...
 
-# Your  OpenRouter API key for accessing AI models
-OPENROUTER_API_KEY=...
-
-
 # Your PostgreSQL connection string
 DATABASE_URL="postgresql://user:password@host:port/database"
 ```
