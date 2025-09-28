@@ -64,6 +64,9 @@ WORLD_DEV_PORTAL_API_KEY=...
 DATABASE_URL="postgresql://user:password@host:port/database"
 ```
 
+
+### App Testing Link: [https://world.org/mini-app?app_id=app_360bcaaeb014c964ac21dd8d961661d0&draft_id=meta_c4bb77273b81db27b7a838797fe90ed0](https://world.org/mini-app?app_id=app_360bcaaeb014c964ac21dd8d961661d0&draft_id=meta_c4bb77273b81db27b7a838797fe90ed0)
+
 ### Running the App
 
 1.  Run the development server:
