@@ -11,6 +11,40 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error }, { status });
     }
 
+    // Get user-specific stats
+    const userStats = await prisma.user.findUnique({
+      where: { id: dbUser.id },
+      select: {
+        vibePoints: true,
+        comparisonsCompleted: true,
+        promptsSubmitted: true,
+      },
+    });
+
+    if (!userStats) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Get user's weekly comparisons
+    const weeklyComparisons = await prisma.comparison.count({
+      where: {
+        userId: dbUser.id,
+        createdAt: {
+          gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        },
+      },
+    });
+
+    // Get user's rank based on comparisons completed
+    const usersWithMoreComparisons = await prisma.user.count({
+      where: {
+        comparisonsCompleted: {
+          gt: userStats.comparisonsCompleted || 0,
+        },
+      },
+    });
+    const userRank = usersWithMoreComparisons + 1;
+
     const totalUsers = await prisma.user.count();
 
     const totalComparisons = await prisma.comparison.count();
@@ -156,8 +190,14 @@ export async function POST(request: NextRequest) {
     };
 
     return NextResponse.json({
+      // User-specific stats for dashboard cards
+      vibePoints: userStats.vibePoints || 0,
+      totalComparisons: userStats.comparisonsCompleted || 0,
+      weeklyComparisons: weeklyComparisons,
+      rank: userRank,
+
+      // Global platform stats
       totalUsers,
-      totalComparisons,
       totalPrompts,
       totalWorldChainPayments,
       recentActivity: allActivity,

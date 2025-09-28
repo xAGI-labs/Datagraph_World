@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
         id: true,
         promptsSubmitted: true,
         comparisonsCompleted: true,
+        vibePoints: true,
         dayStreak: true,
         worldIdVerified: true,
         verificationLevel: true,
@@ -79,6 +80,7 @@ export async function POST(request: NextRequest) {
       // User stats from schema
       promptsSubmitted: userStats.promptsSubmitted || 0,
       comparisonsCompleted: userStats.comparisonsCompleted || 0,
+      vibePoints: userStats.vibePoints || 0,
       dayStreak: userStats.dayStreak || 0,
       favoriteModel: favoriteModel || undefined,
 
