@@ -180,7 +180,7 @@ export default function App() {
       <div className="absolute inset-0 bg-gradient-to-bl from-amber-50 via-gray-50 to-orange-100/40" />
 
       {/* Header with Auth and Profile */}
-      <header className="relative z-10 p-4">
+      <header className="relative z-50 p-4">
         <div className="flex justify-end items-center space-x-2">
           {/* When not signed in */}
           {!user?.worldIdVerified && (
@@ -211,7 +211,7 @@ export default function App() {
 
                 {/* Hamburger Dropdown */}
                 {showHamburgerMenu && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
+                  <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-xl py-2 z-[9999]">
                     <div className="px-4 py-2 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900">{user.name || 'User'}</p>
                       <p className="text-xs text-gray-500">{user.email || ''}</p>
